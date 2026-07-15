@@ -29,29 +29,40 @@
      take more or less scrolling to complete (420vh matches the child's own
      standalone preview length, so it feels the same as when you test
      index.html directly in a browser).
-  4. FULL-BLEED: #jw-embed-wrap breaks out of the article's centered text
-     column using the standard "50vw" trick (left:50%/margin-left:-50vw),
-     so it spans the entire browser width regardless of your theme's
-     content max-width, while the header above it is untouched. If it's
-     still confined to the text column after pasting this in, the theme
-     likely has overflow-x:hidden (or similar) on an ancestor of the
-     content area, which clips the breakout — that needs a theme-level
-     fix, not something this snippet can work around on its own.
+  4. FULL-BLEED: two separate problems had to be solved to get
+     #jw-embed-wrap to truly span the whole browser width:
+       a) WordPress/Gutenberg themes (Newspack included) apply a default
+          "max-width:100%" to direct children of .entry-content to keep
+          normal content narrow. This silently clamped width:100vw right
+          back down to the column width. Fixed by tagging the wrapper
+          with the "alignfull" class themes look for to exempt full-bleed
+          elements, AND forcing max-width:none with !important as a
+          belt-and-suspenders override no matter which selector was
+          actually doing the clamping.
+       b) The classic CSS-only "50vw" breakout trick (left:50% +
+          margin-left:-50vw) only centers correctly when the article
+          column itself is horizontally centered in the browser window.
+          With a sidebar layout, the column is pushed off-center, so that
+          trick overshoots on one side and undershoots on the other by
+          the same amount — which is exactly the "fine on the left, cut
+          off on the right" bug this produced. Fixed by measuring the
+          wrapper's actual offset from the true viewport edge in JS and
+          setting margin-left to cancel it out exactly, on load and on
+          resize (since a responsive sidebar can appear/disappear).
   ============================================================================
 -->
 <style>
   #jw-embed-wrap{
-    position:relative;
-    left:50%; right:50%;
-    margin-left:-50vw; margin-right:-50vw;
-    width:100vw;
+    position:relative!important;
+    width:100vw!important;
+    max-width:none!important;
     height:var(--jw-scroll-length, 420vh);
   }
   #jw-billboard-hook{ position:sticky; top:0; height:100vh; overflow:hidden; }
   #jw-billboard-hook iframe{ width:100%!important; height:100%!important; border:0!important; display:block; }
 </style>
 
-<div id="jw-embed-wrap">
+<div id="jw-embed-wrap" class="alignfull">
   <div id="jw-billboard-hook"></div>
 </div>
 
@@ -65,6 +76,12 @@
 
   function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
 
+  function fixBreakoutOffset(){
+    wrap.style.marginLeft = '0px';
+    var rect = wrap.getBoundingClientRect();
+    wrap.style.marginLeft = (-rect.left) + 'px';
+  }
+
   var ticking = false;
   function onScroll(){
     if (ticking) return;
@@ -77,8 +94,14 @@
     });
   }
 
+  function onResize(){
+    fixBreakoutOffset();
+    onScroll();
+  }
+
   window.addEventListener('scroll', onScroll, {passive:true});
-  window.addEventListener('resize', onScroll);
+  window.addEventListener('resize', onResize);
+  fixBreakoutOffset();
   onScroll();
 })();
 </script>
