@@ -65,6 +65,13 @@
   ============================================================================
 -->
 <style>
+  /* Newspack Theme has no native per-post "hide title" toggle for classic
+     posts, so this hides the category tag / headline / byline / share-icon
+     block above the scrolly. Scoped to just this post since it only takes
+     effect wherever this Custom HTML block is placed. Remove this rule if
+     you ever want the normal title bar back above the embed. */
+  .entry-header{ display:none!important; }
+
   .post-template-single-wide .site-content,
   .post-template-single-feature .site-content { overflow: visible!important; }
 
