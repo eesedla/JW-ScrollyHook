@@ -1,0 +1,32 @@
+<!--
+  ============================================================================
+  JOHN WILLIAMS BILLBOARD HOOK — WORDPRESS PARENT EMBED SNIPPET
+  ============================================================================
+  Paste this into a "Custom HTML" block in the WordPress post/page where the
+  scrolly should appear. It loads index.html into a pym.js-managed iframe:
+  pym relays scroll position into the child page and keeps the iframe's
+  height synced, so the child can stay pinned at one-screen-tall while it
+  intercepts your scroll.
+
+  BEFORE PUBLISHING:
+  1. Swap CHILD_URL below for wherever index.html actually lives.
+       - While iterating: your GitHub Pages URL, e.g.
+         https://eesedla.github.io/JW-ScrollyHook/
+         (Enable via the repo's Settings -> Pages -> Deploy from branch:
+         main / root. Every push to main updates the live page within a
+         minute or two, no re-upload needed.)
+       - For the live article: upload index.html itself to the WP Media
+         Library (same as the billboard photos) and use its direct file URL
+         instead. This keeps the published piece off GitHub entirely.
+  2. Double-check index.html's own --img-closeup / --img-billboard vars
+     point at real Media Library image URLs (not REPLACE_... placeholders).
+  ============================================================================
+-->
+<div id="jw-billboard-hook"></div>
+<script src="https://pym.nprapps.org/pym.v1.min.js"></script>
+<script>
+(function(){
+  var CHILD_URL = 'https://eesedla.github.io/JW-ScrollyHook/';
+  new pym.Parent('jw-billboard-hook', CHILD_URL, {});
+})();
+</script>

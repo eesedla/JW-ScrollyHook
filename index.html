@@ -52,14 +52,14 @@
   /* hole is shaped/positioned to match the billboard graphic itself,
      which sits roughly x:58-91%, y:43-61% of the frame (photo-specific) */
   .jw-scrim{ position:absolute; inset:0; opacity:0; will-change:opacity;
-             background:radial-gradient(ellipse 21% 13% at 74.5% 52%, transparent 50%, rgba(0,0,0,.3) 100%); }
+             background:radial-gradient(ellipse 21% 13% at 74.5% 52%, transparent 50%, rgba(0,0,0,.2) 100%); }
 
   .jw-cap-scrim{ position:absolute; inset:0; opacity:0; will-change:opacity;
                  background:linear-gradient(100deg, rgba(0,0,0,.5) 0%, rgba(0,0,0,.22) 40%, transparent 65%); }
 
   .jw-cmt{ position:absolute; margin:0; max-width:min(38vw,340px); color:#fff;
            font:500 clamp(17px,2.4vw,27px)/1.35 'Inter',-apple-system,Segoe UI,sans-serif;
-           text-shadow:0 2px 14px rgba(0,0,0,.9); opacity:1; transform:translateY(10px);
+           text-shadow:0 2px 14px rgba(0,0,0,.9), 0 1px 2px rgba(0,0,0,1); opacity:1; transform:translateY(10px);
            will-change:opacity,transform; }
   .jw-cmt cite{ display:block; margin-top:.4em; font:600 .72em/1 'Inter',sans-serif; color:#f4c913; font-style:normal; }
   /* ring positioned around the billboard graphic, which sits roughly
@@ -246,5 +246,6 @@
   }
 })();
 </script>
+
 </body>
 </html>
