@@ -108,7 +108,8 @@
      with the header and share row hidden. */
   .entry-content{ margin-top:0!important; padding-top:0!important; }
   .site-content{ margin-top:0!important; }
-  #jw-billboard-hook{ position:sticky!important; top:0!important; height:100vh!important; overflow:hidden; }
+  #jw-billboard-hook{ position:sticky!important; top:0!important; height:100vh!important; overflow:hidden;
+                       opacity:1; transition:opacity .25s ease; }
   #jw-billboard-hook iframe{ width:100%!important; height:100%!important; border:0!important; display:block; }
 </style>
 
@@ -122,6 +123,7 @@
   var CHILD_URL = 'https://eesedla.github.io/JW-ScrollyHook/';
 
   var wrap = document.getElementById('jw-embed-wrap');
+  var holder = document.getElementById('jw-billboard-hook');
   var pymParent = new pym.Parent('jw-billboard-hook', CHILD_URL, {});
 
   function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
@@ -132,6 +134,11 @@
     wrap.style.marginLeft = (-rect.left) + 'px';
   }
 
+  // Once the story has fully played through (progress reaches 1),
+  // continuing to scroll down fades the pinned image away instead of
+  // leaving it stuck over the rest of the article. Scrolling back up
+  // brings it back.
+  var lastScrollY = window.scrollY;
   var ticking = false;
   function onScroll(){
     if (ticking) return;
@@ -140,6 +147,13 @@
       var rect = wrap.getBoundingClientRect();
       var progress = clamp(-rect.top / (rect.height - window.innerHeight), 0, 1);
       pymParent.sendMessage('progress', String(progress));
+
+      var currentScrollY = window.scrollY;
+      var scrollingDown = currentScrollY > lastScrollY;
+      lastScrollY = currentScrollY;
+      holder.style.opacity = (progress >= 1 && scrollingDown) ? '0' : '1';
+      holder.style.pointerEvents = (progress >= 1 && scrollingDown) ? 'none' : '';
+
       ticking = false;
     });
   }
