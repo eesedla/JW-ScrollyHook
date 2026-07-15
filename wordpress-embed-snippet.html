@@ -63,8 +63,17 @@
      shouldn't reintroduce the horizontal-scrollbar issue that safeguard
      exists for. If you're not using either template, this rule is inert.
   ============================================================================
+  6. SITE MASTHEAD STAYING PINNED: Newspack Theme makes the site header
+     ("masthead") sticky by default, which fights the full-bleed pinned
+     image for the top of the screen. The override below un-sticks it for
+     just this post so it scrolls away normally with the rest of the page,
+     the same way the other scoped overrides in this file work. Remove it
+     if you'd rather the masthead stay pinned above the embed too.
+  ============================================================================
 -->
 <style>
+  #masthead{ position:static!important; }
+
   /* Newspack Theme has no native per-post "hide title" toggle for classic
      posts, so this visually hides the category tag / headline / byline /
      share-icon block above the scrolly. Uses the standard "visually
