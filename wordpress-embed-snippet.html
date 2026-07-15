@@ -83,6 +83,14 @@
     white-space:nowrap!important; border:0!important;
   }
 
+  /* the AddToAny share-buttons plugin renders its own row separately from
+     .entry-header, right above the rest of .entry-content — hide it too so
+     nothing but the scrolly sits below the site nav. Unlike the title,
+     these are interactive controls duplicating functionality (share/print
+     links) rather than page-identifying content, so display:none (fully
+     removed from the tab order) is the right call here, not visually-hidden. */
+  .addtoany_share_save_container{ display:none!important; }
+
   .post-template-single-wide .site-content,
   .post-template-single-feature .site-content { overflow: visible!important; }
 
