@@ -29,10 +29,24 @@
      take more or less scrolling to complete (420vh matches the child's own
      standalone preview length, so it feels the same as when you test
      index.html directly in a browser).
+  4. FULL-BLEED: #jw-embed-wrap breaks out of the article's centered text
+     column using the standard "50vw" trick (left:50%/margin-left:-50vw),
+     so it spans the entire browser width regardless of your theme's
+     content max-width, while the header above it is untouched. If it's
+     still confined to the text column after pasting this in, the theme
+     likely has overflow-x:hidden (or similar) on an ancestor of the
+     content area, which clips the breakout — that needs a theme-level
+     fix, not something this snippet can work around on its own.
   ============================================================================
 -->
 <style>
-  #jw-embed-wrap{ position:relative; height:var(--jw-scroll-length, 420vh); }
+  #jw-embed-wrap{
+    position:relative;
+    left:50%; right:50%;
+    margin-left:-50vw; margin-right:-50vw;
+    width:100vw;
+    height:var(--jw-scroll-length, 420vh);
+  }
   #jw-billboard-hook{ position:sticky; top:0; height:100vh; overflow:hidden; }
   #jw-billboard-hook iframe{ width:100%!important; height:100%!important; border:0!important; display:block; }
 </style>
