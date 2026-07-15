@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  JOHN WILLIAMS — "OPEN ON THE FACE, THEN PULL BACK" — pym.js CHILD PAGE
+  ============================================================================
+  This is the file you upload and point the iframe at. It works two ways:
+   • EMBEDDED via pym.js  -> the parent page relays scroll progress; this page
+     stays exactly one screen tall and is "pinned" by the parent. (production)
+   • STANDALONE (opened directly) -> it adds its own scroll room so you can
+     preview the motion in a browser before embedding.
+
+  IMAGE SLOTS: replace the REPLACE_... URLs in the :root block below with
+  your WordPress Media Library URLs.
+
+  Parent embed code is in "wordpress-embed-snippet.html".
+  ============================================================================
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>John Williams — hook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* ==== REPLACE THESE THREE WITH YOUR MEDIA LIBRARY URLS ==== */
+    --img-closeup:   url('https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-13-scaled.jpg');
+    --img-billboard: url('https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-12-scaled.jpg');
+    /* ========================================================== */
+    --fallback: linear-gradient(135deg,#3a3a3a,#111);
+  }
+  html,body{ margin:0; background:#0b0b0b; }
+
+  .jw-scrolly{ position:relative; height:100vh; }      /* JS sets 420vh when standalone */
+  .jw-sticky{
+    position:sticky; top:0; height:100vh; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  .jw-zoom{
+    position:absolute; inset:0;
+    transform:scale(1.4);
+    transform-origin:50% 42%;         /* center the pull-back on his face */
+    will-change:transform;
+  }
+  .jw-layer{ position:absolute; inset:0; background-size:cover; background-position:center; will-change:opacity; }
+  .jw-closeup  { background-image:var(--img-closeup),   var(--fallback); opacity:1; }
+  .jw-billboard{ background-image:var(--img-billboard), var(--fallback); opacity:0; }
+
+  /* hole is shaped/positioned to match the billboard graphic itself,
+     which sits roughly x:58-91%, y:43-61% of the frame (photo-specific) */
+  .jw-scrim{ position:absolute; inset:0; opacity:0; will-change:opacity;
+             background:radial-gradient(ellipse 21% 13% at 74.5% 52%, transparent 50%, rgba(0,0,0,.3) 100%); }
+
+  .jw-cap-scrim{ position:absolute; inset:0; opacity:0; will-change:opacity;
+                 background:linear-gradient(100deg, rgba(0,0,0,.5) 0%, rgba(0,0,0,.22) 40%, transparent 65%); }
+
+  .jw-cmt{ position:absolute; margin:0; max-width:min(38vw,340px); color:#fff;
+           font:500 clamp(17px,2.4vw,27px)/1.35 'Inter',-apple-system,Segoe UI,sans-serif;
+           text-shadow:0 2px 14px rgba(0,0,0,.9); opacity:1; transform:translateY(10px);
+           will-change:opacity,transform; }
+  .jw-cmt cite{ display:block; margin-top:.4em; font:600 .72em/1 'Inter',sans-serif; color:#f4c913; font-style:normal; }
+  /* ring positioned around the billboard graphic, which sits roughly
+     x:58-91%, y:43-61% of the frame (photo-specific, hugs the right edge) */
+  .jw-cmt1{ top:6%; left:7%; }
+  .jw-cmt2{ top:10%; right:6%; max-width:min(26vw,280px); text-align:right; }
+  .jw-cmt3{ top:40%; left:5%; max-width:min(22vw,240px); }
+  .jw-cmt4{ bottom:6%; right:5%; max-width:min(28vw,300px); text-align:right; }
+  .jw-cmt-center{ transform:translate(-50%,10px); text-align:center; }
+  .jw-cmt5{ top:68%; left:58%; max-width:min(42vw,460px); }
+  .jw-cmt6{ top:3%; left:50%; max-width:min(30vw,340px); }
+  .jw-cmt7{ top:24%; left:28%; max-width:min(22vw,240px); }
+  .jw-cmt8{ top:58%; left:34%; max-width:min(20vw,220px); }
+  .jw-cmt9{ bottom:6%; left:8%; max-width:min(30vw,340px); }
+
+  .jw-headline{ position:absolute; inset:0; display:grid; place-items:center;
+                margin:0; padding:0 7vw; text-align:center; }
+  .jw-headline p{ grid-area:1/1; margin:0; color:#fff;
+                  font-family:'Inter',-apple-system,Segoe UI,Roboto,sans-serif;
+                  font-weight:700; font-size:clamp(40px,6.8vw,80px); line-height:1.25;
+                  text-shadow:0 2px 18px rgba(0,0,0,.85);
+                  opacity:0; transform:translateY(14px); will-change:opacity,transform; }
+
+  .jw-caption{ position:absolute; top:50%; left:6%; transform:translateY(-50%);
+               max-width:min(46vw,600px); display:grid; }
+  .jw-caption p{ grid-area:1/1; margin:0; color:#fff; font-family:'Inter',-apple-system,Segoe UI,Roboto,sans-serif;
+                 font-weight:500; font-size:clamp(30px,3.8vw,44px); line-height:1.4;
+                 text-shadow:0 3px 20px rgba(0,0,0,.95), 0 1px 3px rgba(0,0,0,1); }
+  .jw-cap-l1,.jw-cap-stem,.jw-cap-em{ opacity:0; transform:translateY(10px); will-change:opacity,transform; }
+  .jw-cap-stem{ display:inline-block; }
+  .jw-cap-em{ font-style:italic; }
+  .jw-cap-em-l1,.jw-cap-em-l2{ padding:.05em .12em; background-image:linear-gradient(#ffd23f,#ffd23f);
+              background-repeat:no-repeat; background-position:0 50%; background-size:0% 100%; }
+
+  @media (max-width:600px){
+    .jw-caption{ max-width:74vw; }
+  }
+
+  .jw-pivot-scrim{ position:absolute; inset:0; opacity:0; will-change:opacity;
+                   background:linear-gradient(90deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.42) 40%, transparent 62%); }
+
+  .jw-pivot{ position:absolute; inset:0; display:flex; align-items:center; justify-content:flex-start;
+             text-align:left; opacity:0; will-change:opacity; padding:0 6vw; }
+  .jw-pivot p{ margin:0; max-width:44vw; color:#fff; font:500 clamp(22px,4vw,46px)/1.25 'Inter',sans-serif;
+               text-shadow:0 3px 24px rgba(0,0,0,.85), 0 1px 3px rgba(0,0,0,1); }
+  .jw-pivot span{ color:#f4c913; }
+
+  @media (max-width:600px){
+    .jw-cmt{ max-width:64vw; }
+    .jw-cmt2,.jw-cmt4{ text-align:left; left:6%; right:auto; }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .jw-zoom{ transform:scale(1)!important; }
+    .jw-closeup{ opacity:0!important; } .jw-billboard{ opacity:1!important; }
+    .jw-scrim{ opacity:.5!important; } .jw-cmt1,.jw-cmt3{ opacity:1!important; transform:none!important; }
+    .jw-headline p{ opacity:1!important; transform:none!important; }
+    .jw-cap-l1,.jw-cap-stem,.jw-cap-em{ opacity:1!important; transform:none!important; }
+    .jw-cap-em-l1,.jw-cap-em-l2{ background-size:100% 100%!important; }
+  }
+</style>
+</head>
+<body>
+
+<section class="jw-scrolly" aria-label="John Williams billboard hook">
+  <div class="jw-sticky">
+    <div class="jw-zoom">
+      <div class="jw-layer jw-closeup"   role="img" aria-label="Extreme close-up of John Williams' billboard face"></div>
+      <div class="jw-layer jw-billboard" role="img" aria-label="Billboard reading HIM, Cleveland's #1 Cash Home Buyer"></div>
+    </div>
+    <div class="jw-scrim"></div>
+    <div class="jw-cap-scrim"></div>
+    <div class="jw-headline">
+      <p class="jw-headline-l1">John Williams' billboards put him on Cleveland's radar.</p>
+      <p class="jw-headline-l2">His business model is what worries housing officials.</p>
+    </div>
+    <div class="jw-caption">
+      <p class="jw-cap-l1">John Williams caught Cleveland’s attention last summer with a billboard that read “Yes! I buy crack houses.”</p>
+      <p><span class="jw-cap-stem">Online and beyond, Clevelanders have found common ground:</span> <em class="jw-cap-em"><span class="jw-cap-em-l1">they can’t stand John</span><br><span class="jw-cap-em-l2">Williams.</span></em></p>
+    </div>
+    <blockquote class="jw-cmt jw-cmt1">“Slum lord”<cite>unionguy1980 via r/Cleveland</cite></blockquote>
+    <blockquote class="jw-cmt jw-cmt2">"You’re sending a clear message. You’re being condescending, you’re being demeaning, and you’re being disrespectful.”<cite>Cleveland Council President Blaine Griffin for Cleveland 19 News</cite></blockquote>
+    <blockquote class="jw-cmt jw-cmt3">“Who tf is this loser wannabe trying to take our boy Misney's place?”<cite>onestrandofspaghetti via r/Cleveland</cite></blockquote>
+    <blockquote class="jw-cmt jw-cmt4">“Someone get this guy out of Cleveland.”<cite>gingerbread2092 via r/Cleveland</cite></blockquote>
+    <blockquote class="jw-cmt jw-cmt5 jw-cmt-center">"[John's] face is deeply annoying and having it everywhere actively diminishes the experience of driving around Cleveland.”<cite>Horker_Stew via r/Cleveland</cite></blockquote>
+    <blockquote class="jw-cmt jw-cmt6 jw-cmt-center">“He does not care a lick about Cleveland or the people that live here.”<cite>PhyllisIrresistible via r/Cleveland</cite></blockquote>
+    <blockquote class="jw-cmt jw-cmt7 jw-cmt-center">"Cmon guys, we can bully this turd out of Cleveland"<cite>lilshortyy420 via r/Cleveland</cite></blockquote>
+    <blockquote class="jw-cmt jw-cmt8 jw-cmt-center">“Temu Andrew Tate.”<cite>DagTheBountyHunter via r/Cleveland</cite></blockquote>
+    <blockquote class="jw-cmt jw-cmt9">"I’m living for this John Williams drama... I need to make some popcorn"<cite>TidalRose via r/Cleveland</cite></blockquote>
+    <div class="jw-pivot-scrim"></div>
+    <div class="jw-pivot"><p>Lost in the billboard outrage is a quieter question:<br><span>what happens to these neighborhoods when investors—most without billboards—scale Williams’ playbook. </span></p></div>
+  </div>
+</section>
+
+<!-- pym.js: lets the parent WordPress page relay scroll + keep the iframe responsive -->
+<script src="https://pym.nprapps.org/pym.v1.min.js"></script>
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  var scrolly  = document.querySelector('.jw-scrolly');
+  var zoom     = scrolly.querySelector('.jw-zoom');
+  var closeup  = scrolly.querySelector('.jw-closeup');
+  var billboard= scrolly.querySelector('.jw-billboard');
+  var scrim    = scrolly.querySelector('.jw-scrim');
+  var capScrim = scrolly.querySelector('.jw-cap-scrim');
+  var hLine1   = scrolly.querySelector('.jw-headline-l1');
+  var hLine2   = scrolly.querySelector('.jw-headline-l2');
+  var capL1    = scrolly.querySelector('.jw-cap-l1');
+  var capStem  = scrolly.querySelector('.jw-cap-stem');
+  var capEm    = scrolly.querySelector('.jw-cap-em');
+  var capEmL1  = scrolly.querySelector('.jw-cap-em-l1');
+  var capEmL2  = scrolly.querySelector('.jw-cap-em-l2');
+  var pivotScrim = scrolly.querySelector('.jw-pivot-scrim');
+  var pivot    = scrolly.querySelector('.jw-pivot');
+  var cmts     = [].slice.call(scrolly.querySelectorAll('.jw-cmt'));
+
+  function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
+  function ramp(p,a,b){ return clamp((p-a)/(b-a),0,1); }
+  function pulse(p,a,b,c,d){ return Math.min(ramp(p,a,b), 1-ramp(p,c,d)); }
+
+  // p is 0 -> 1 across the whole hook
+  function render(p){
+    if(reduce) return;
+    zoom.style.transform = 'scale('+(1.4 - 0.4*ramp(p,0,0.6)).toFixed(4)+')';
+    billboard.style.opacity = ramp(p,0.30,0.48).toFixed(3);
+    closeup.style.opacity   = (1-ramp(p,0.32,0.46)).toFixed(3);
+    var hv1 = pulse(p,0.03,0.08,0.14,0.19);
+    hLine1.style.opacity   = hv1.toFixed(3);
+    hLine1.style.transform = 'translateY('+(14-14*hv1)+'px)';
+    var hv2 = pulse(p,0.16,0.21,0.26,0.32);
+    hLine2.style.opacity   = hv2.toFixed(3);
+    hLine2.style.transform = 'translateY('+(14-14*hv2)+'px)';
+
+    capScrim.style.opacity = pulse(p,0.34,0.38,0.70,0.74).toFixed(3);
+    var cv1 = pulse(p,0.34,0.38,0.46,0.50);
+    capL1.style.opacity   = cv1.toFixed(3);
+    capL1.style.transform = 'translateY('+(10-10*cv1)+'px)';
+    var cv2 = pulse(p,0.52,0.56,0.70,0.74);
+    capStem.style.opacity   = cv2.toFixed(3);
+    capStem.style.transform = 'translateY('+(10-10*cv2)+'px)';
+    var cv3 = pulse(p,0.60,0.64,0.70,0.74);
+    capEm.style.opacity   = cv3.toFixed(3);
+    var emSweep1 = ramp(p,0.64,0.665);
+    capEmL1.style.backgroundSize = (emSweep1*100).toFixed(1)+'% 100%';
+    var emSweep2 = ramp(p,0.665,0.69);
+    capEmL2.style.backgroundSize = (emSweep2*100).toFixed(1)+'% 100%';
+
+    scrim.style.opacity = pulse(p,0.74,0.80,0.90,0.95).toFixed(3);
+    cmts.forEach(function(el,i){
+      var start = 0.76 + i*0.014;
+      var v = pulse(p, start, start+0.02, 0.90, 0.95);
+      el.style.opacity = v.toFixed(3);
+      el.style.transform = el.classList.contains('jw-cmt-center')
+        ? 'translate(-50%,'+(10-10*v)+'px)'
+        : 'translateY('+(10-10*v)+'px)';
+    });
+    pivotScrim.style.opacity = ramp(p,0.95,1).toFixed(3);
+    pivot.style.opacity   = ramp(p,0.95,1).toFixed(3);
+  }
+
+  var embedded = (window.self !== window.top);
+
+  if (embedded && window.pym){
+    // PRODUCTION: parent relays scroll progress; stay one screen tall.
+    var child = new pym.Child({ polling: 0 });
+    child.onMessage('progress', function(v){ render(parseFloat(v)); });
+    render(0);
+    window.addEventListener('resize', function(){ child.sendHeight(); });
+  } else {
+    // STANDALONE PREVIEW: give the page its own scroll room and self-drive.
+    scrolly.style.height = '420vh';
+    var ticking=false;
+    function onScroll(){
+      if(ticking) return; ticking=true;
+      requestAnimationFrame(function(){
+        var rect = scrolly.getBoundingClientRect();
+        render(clamp(-rect.top/(rect.height-window.innerHeight),0,1));
+        ticking=false;
+      });
+    }
+    window.addEventListener('scroll', onScroll, {passive:true});
+    window.addEventListener('resize', onScroll);
+    onScroll();
+  }
+})();
+</script>
+</body>
+</html>
