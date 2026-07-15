@@ -3,10 +3,15 @@
   JOHN WILLIAMS BILLBOARD HOOK — WORDPRESS PARENT EMBED SNIPPET
   ============================================================================
   Paste this into a "Custom HTML" block in the WordPress post/page where the
-  scrolly should appear. It loads index.html into a pym.js-managed iframe:
-  pym relays scroll position into the child page and keeps the iframe's
-  height synced, so the child can stay pinned at one-screen-tall while it
-  intercepts your scroll.
+  scrolly should appear.
+
+  How the pin works: .jw-embed-wrap is a tall invisible "track" (420vh) that
+  gives you scroll room. .jw-embed-sticky pins at the top of the viewport
+  (100vh) for the whole time the track is scrolling past. As you scroll, the
+  JS below measures how far through the track you are (0 -> 1) and sends
+  that number into the child iframe via pym's postMessage channel; the child
+  uses it to drive all its internal animations. The child itself never
+  scrolls — only this wrapper does.
 
   BEFORE PUBLISHING:
   1. Swap CHILD_URL below for wherever index.html actually lives.
@@ -20,13 +25,46 @@
          instead. This keeps the published piece off GitHub entirely.
   2. Double-check index.html's own --img-closeup / --img-billboard vars
      point at real Media Library image URLs (not REPLACE_... placeholders).
+  3. Adjust --jw-scroll-length below if you want the pinned experience to
+     take more or less scrolling to complete (420vh matches the child's own
+     standalone preview length, so it feels the same as when you test
+     index.html directly in a browser).
   ============================================================================
 -->
-<div id="jw-billboard-hook"></div>
+<style>
+  #jw-embed-wrap{ position:relative; height:var(--jw-scroll-length, 420vh); }
+  #jw-billboard-hook{ position:sticky; top:0; height:100vh; overflow:hidden; }
+  #jw-billboard-hook iframe{ width:100%!important; height:100%!important; border:0!important; display:block; }
+</style>
+
+<div id="jw-embed-wrap">
+  <div id="jw-billboard-hook"></div>
+</div>
+
 <script src="https://pym.nprapps.org/pym.v1.min.js"></script>
 <script>
 (function(){
   var CHILD_URL = 'https://eesedla.github.io/JW-ScrollyHook/';
-  new pym.Parent('jw-billboard-hook', CHILD_URL, {});
+
+  var wrap = document.getElementById('jw-embed-wrap');
+  var pymParent = new pym.Parent('jw-billboard-hook', CHILD_URL, {});
+
+  function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+
+  var ticking = false;
+  function onScroll(){
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function(){
+      var rect = wrap.getBoundingClientRect();
+      var progress = clamp(-rect.top / (rect.height - window.innerHeight), 0, 1);
+      pymParent.sendMessage('progress', String(progress));
+      ticking = false;
+    });
+  }
+
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+  onScroll();
 })();
 </script>
