@@ -49,9 +49,25 @@
           wrapper's actual offset from the true viewport edge in JS and
           setting margin-left to cancel it out exactly, on load and on
           resize (since a responsive sidebar can appear/disappear).
+  5. STICKY PIN BREAKING UNDER "SINGLE WIDE" / "SINGLE FEATURE" TEMPLATES:
+     Newspack Theme sets `.site-content { overflow: hidden; }` specifically
+     for those two templates (to contain other 100vw-wide full-bleed
+     elements, per the theme's own source comments). But an overflow other
+     than 'visible' on ANY ancestor between a position:sticky element and
+     the page breaks the sticky pin entirely — the symptom is "shows the
+     pinned image for one screen, then goes blank" as the content just
+     scrolls away normally instead of staying put. The override below
+     restores overflow:visible on .site-content specifically for those two
+     templates so the pin can work; it's scoped narrowly enough (and this
+     embed already constrains its own width to exactly 100vw) that it
+     shouldn't reintroduce the horizontal-scrollbar issue that safeguard
+     exists for. If you're not using either template, this rule is inert.
   ============================================================================
 -->
 <style>
+  .post-template-single-wide .site-content,
+  .post-template-single-feature .site-content { overflow: visible!important; }
+
   #jw-embed-wrap{
     position:relative!important;
     width:100vw!important;
