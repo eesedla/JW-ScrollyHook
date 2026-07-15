@@ -99,7 +99,13 @@
     width:100vw!important;
     max-width:none!important;
     height:var(--jw-scroll-length, 420vh)!important;
+    margin:0!important;
   }
+  /* Gutenberg/Newspack add block-spacing margin above top-level content
+     blocks (including alignfull ones — the width exemption doesn't cover
+     vertical spacing), which is what leaves a gap above the embed even
+     with the header and share row hidden. */
+  .entry-content{ margin-top:0!important; padding-top:0!important; }
   #jw-billboard-hook{ position:sticky!important; top:0!important; height:100vh!important; overflow:hidden; }
   #jw-billboard-hook iframe{ width:100%!important; height:100%!important; border:0!important; display:block; }
 </style>
