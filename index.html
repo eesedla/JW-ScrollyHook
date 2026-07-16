@@ -22,7 +22,7 @@
 <title>John Williams — hook</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,500;0,600;0,700;1,500&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
 <style>
   :root{
     /* ==== REPLACE THESE THREE WITH YOUR MEDIA LIBRARY URLS ==== */
@@ -49,10 +49,15 @@
   .jw-closeup  { background-image:var(--img-closeup),   var(--fallback); opacity:1; }
   .jw-billboard{ background-image:var(--img-billboard), var(--fallback); opacity:0; }
 
-  /* hole is shaped/positioned to match the billboard graphic itself,
-     which sits roughly x:58-91%, y:43-61% of the frame (photo-specific) */
+  /* Hole tracks the sign in the source photo (2560x1703, sign centered ~64.5%/51%
+     of the frame). background-size:cover binds to whichever axis the viewport is
+     proportionally narrower than the photo's 1.503 aspect ratio, so each length
+     below is a max() of its width-bound and height-bound form -- this keeps the
+     hole locked to the sign's true position/shape at any viewport aspect. */
   .jw-scrim{ position:absolute; inset:0; opacity:0; will-change:opacity;
-             background:radial-gradient(ellipse 21% 13% at 74.5% 52%, transparent 50%, rgba(0,0,0,.2) 100%); }
+             background:radial-gradient(ellipse max(20vw,30.1vh) max(12.6vw,19vh)
+             at calc(50% + max(14.5vw,21.7vh)) calc(50% + max(0.7vw,1vh)),
+             transparent 50%, rgba(0,0,0,.2) 100%); }
 
   .jw-cap-scrim{ position:absolute; inset:0; opacity:0; will-change:opacity;
                  background:linear-gradient(100deg, rgba(0,0,0,.5) 0%, rgba(0,0,0,.22) 40%, transparent 65%); }
@@ -64,21 +69,21 @@
   .jw-cmt cite{ display:block; margin-top:.4em; font:600 .72em/1 'Inter',sans-serif; color:#f4c913; font-style:normal; }
   /* ring positioned around the billboard graphic, which sits roughly
      x:58-91%, y:43-61% of the frame (photo-specific, hugs the right edge) */
-  .jw-cmt1{ top:6%; left:7%; }
-  .jw-cmt2{ top:10%; right:6%; max-width:min(26vw,280px); text-align:right; }
+  .jw-cmt1{ top:7%; left:7%; }
+  .jw-cmt2{ top:7%; right:5%; max-width:min(26vw,280px); text-align:right; }
   .jw-cmt3{ top:40%; left:5%; max-width:min(22vw,240px); }
   .jw-cmt4{ bottom:6%; right:5%; max-width:min(28vw,300px); text-align:right; }
   .jw-cmt-center{ transform:translate(-50%,10px); text-align:center; }
-  .jw-cmt5{ top:68%; left:58%; max-width:min(42vw,460px); }
-  .jw-cmt6{ top:3%; left:50%; max-width:min(30vw,340px); }
-  .jw-cmt7{ top:24%; left:28%; max-width:min(22vw,240px); }
-  .jw-cmt8{ top:58%; left:34%; max-width:min(20vw,220px); }
-  .jw-cmt9{ bottom:6%; left:8%; max-width:min(30vw,340px); }
+  .jw-cmt5{ top:72%; left:72%; max-width:min(42vw,460px); }
+  .jw-cmt6{ top:8%; left:55%; max-width:min(30vw,340px); }
+  .jw-cmt7{ top:29%; left:34%; max-width:min(22vw,240px); }
+  .jw-cmt8{ top:63%; left:44%; max-width:min(20vw,220px); }
+  .jw-cmt9{ bottom:8%; left:8%; max-width:min(30vw,340px); }
 
   .jw-headline{ position:absolute; inset:0; display:grid; place-items:center;
                 margin:0; padding:0 7vw; text-align:center; }
-  .jw-headline p{ grid-area:1/1; margin:0; color:#fff;
-                  font-family:'Inter',-apple-system,Segoe UI,Roboto,sans-serif;
+  .jw-headline p{ grid-area:1/1; margin:0 auto; max-width:min(90%,1000px); color:#fff;
+                  font-family:'Roboto Condensed',-apple-system,Segoe UI,Roboto,sans-serif;
                   font-weight:700; font-size:clamp(40px,6.8vw,80px); line-height:1.25;
                   text-shadow:0 2px 18px rgba(0,0,0,.85);
                   opacity:0; transform:translateY(14px); will-change:opacity,transform; }
@@ -104,7 +109,7 @@
   .jw-pivot{ position:absolute; inset:0; display:flex; align-items:center; justify-content:flex-start;
              text-align:left; opacity:0; will-change:opacity; padding:0 6vw; }
   .jw-pivot p{ margin:0; max-width:44vw; color:#fff; font:500 clamp(22px,4vw,46px)/1.25 'Inter',sans-serif;
-               text-shadow:0 3px 24px rgba(0,0,0,.85), 0 1px 3px rgba(0,0,0,1); }
+               text-shadow:0 3px 20px rgba(0,0,0,.95), 0 1px 3px rgba(0,0,0,1); }
   .jw-pivot span{ color:#f4c913; }
 
   @media (max-width:600px){
@@ -142,7 +147,6 @@
     <blockquote class="jw-cmt jw-cmt1">“Slum lord”<cite>unionguy1980 via r/Cleveland</cite></blockquote>
     <blockquote class="jw-cmt jw-cmt2">"You’re sending a clear message. You’re being condescending, you’re being demeaning, and you’re being disrespectful.”<cite>Cleveland Council President Blaine Griffin for Cleveland 19 News</cite></blockquote>
     <blockquote class="jw-cmt jw-cmt3">“Who tf is this loser wannabe trying to take our boy Misney's place?”<cite>onestrandofspaghetti via r/Cleveland</cite></blockquote>
-    <blockquote class="jw-cmt jw-cmt4">“Someone get this guy out of Cleveland.”<cite>gingerbread2092 via r/Cleveland</cite></blockquote>
     <blockquote class="jw-cmt jw-cmt5 jw-cmt-center">"[John's] face is deeply annoying and having it everywhere actively diminishes the experience of driving around Cleveland.”<cite>Horker_Stew via r/Cleveland</cite></blockquote>
     <blockquote class="jw-cmt jw-cmt6 jw-cmt-center">“He does not care a lick about Cleveland or the people that live here.”<cite>PhyllisIrresistible via r/Cleveland</cite></blockquote>
     <blockquote class="jw-cmt jw-cmt7 jw-cmt-center">"Cmon guys, we can bully this turd out of Cleveland"<cite>lilshortyy420 via r/Cleveland</cite></blockquote>
