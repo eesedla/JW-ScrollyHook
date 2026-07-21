@@ -131,7 +131,11 @@
   .jw-item{ position:absolute; inset:0; display:flex; align-items:center; justify-content:flex-start;
             padding:0 3vw; }
   .jw-item-right{ justify-content:flex-end; }
-  .jw-item-card{ max-width:min(820px,42vw);
+  .jw-item-center{ justify-content:center; }
+  /* groups multiple cards (e.g. a card + a note) so they're measured and
+     scrolled together as one rigid unit, the note sitting directly under */
+  .jw-item-stack{ display:flex; flex-direction:column; gap:clamp(16px,2vw,28px); }
+  .jw-item-card{ max-width:min(920px,46vw);
                  padding:clamp(22px,2.6vw,34px) clamp(26px,3vw,38px); }
   .jw-item-card p{ margin:0; color:#404f54; font-family:'Inter',-apple-system,Segoe UI,Roboto,sans-serif;
                     font-weight:400; font-size:clamp(18px,1.9vw,21px); line-height:1.75; }
@@ -140,6 +144,16 @@
                                 font-weight:700; font-size:1.4em; line-height:1.3; }
   .jw-item-card p a{ color:#111; text-decoration:underline; text-decoration-color:#23685b;
                       text-decoration-thickness:2px; transition:all 100ms ease-in; }
+
+  /* matches .jw-caption-card's type treatment for a closing item that should
+     read like the opening caption rather than a regular reporting card */
+  .jw-item-caption p{ font-weight:500; font-size:clamp(21px,2.6vw,30px); line-height:1.45; }
+
+  /* a stylistically distinct callout, set apart from the regular reporting
+     cards -- same shell, tinted background + accent rule + an eyebrow label */
+  .jw-note-card{ background:#fdf6df; border-left:6px solid #f4c913; }
+  .jw-item-card p.jw-note-label{ margin:0 0 .5em; color:#c2410c; font-family:'Roboto Condensed',-apple-system,Segoe UI,Roboto,sans-serif;
+                                  font-weight:700; font-size:.85em; letter-spacing:.06em; text-transform:uppercase; }
 
   /* the pivot and every item card scroll as a literal, fully opaque part of
      the page (see the JS "stack" below) rather than fading in like the
@@ -272,6 +286,102 @@
         <p>Using his social media, Williams sells these numbers to out-of-state investors. Through a paid real estate investment service called <a href="https://singlefamilyinvestors.com/#contact" target="_blank" rel="noopener">Single Family Investors</a>, Williams helps investors buy and renovate homes, find tenants, and then his company, <a href="https://singlefamilymanagement.com/" target="_blank" rel="noopener">Single Family Management</a>, manages their properties in Greater Cleveland. With his services, investors don’t need to set foot in Cleveland to profit from their investments here.</p>
       </div>
     </div>
+    <!-- the note is nested in the same .jw-item-stack as the card before it,
+         so they're measured and scrolled together as one rigid unit -- the
+         note appears directly underneath rather than as its own beat -->
+    <div class="jw-item jw-item-right">
+      <div class="jw-item-stack">
+        <div class="jw-card jw-item-card" data-bg="https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-9-scaled.jpg">
+          <p class="jw-item-sub">Wholesale buyers like Williams hunt for properties that homeowners feel stuck with.</p>
+          <p>They want to buy houses for cash, fast, often below market value.</p>
+          <p>Aging homeowners sitting on old houses that no longer work for them or adult children dealing with a parent’s move to a nursing home, overwhelmed by the prospect of getting the house “market-ready.”</p>
+          <p>For them, a cash buyer knocking on the door with an offer in hand can feel like relief.</p>
+          <p>Williams claims his cash offers are fair and often more than homeowners could get on the open market.</p>
+          <p>Williams told online followers that winter is an ideal time to buy. “The heating bills are going to continue to grow. People that have roofing issues, you know, it’s going to be harder for them to write a check in this financial climate. And I think it’s going to push a lot of motivated sellers towards us.”</p>
+          <p>It’s a strategy that depends on financial distress.</p>
+        </div>
+        <div class="jw-card jw-item-card jw-note-card">
+          <p class="jw-note-label">A note for homeowners</p>
+          <p>The single most important thing a homeowner can do, Martin-O’Toole said, is talk to a licensed realtor before talking to anyone offering cash. Even a free consultation will tell you what your house is actually worth on the open market. Cash buyers count on you not knowing.</p>
+          <p>A few other red flags: aggressive, repeated outreach by text or phone, pressure to sign quickly, and the promise that “it doesn’t matter what condition it’s in.” Those are sales tactics, not favors. <strong>A real buyer on the open market — even for a house that needs work — will almost always pay more than a wholesaler will.</strong></p>
+        </div>
+      </div>
+    </div>
+    <div class="jw-item jw-item-center">
+      <div class="jw-card jw-item-card" data-bg="https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-1-scaled.jpg">
+        <p class="jw-item-sub">Williams prefers to lease his properties to tenants with vouchers as part of a federal rent subsidy program often referred to as Section 8.</p>
+        <p>Households with Section 8 vouchers pay about 30% of their income toward rent. The voucher covers the rest, up to what the federal government determines is “fair market rent” for the area.</p>
+        <p>CMHA doesn’t formally partner with individual landlords. Voucher holders find units on the open market, and CMHA approves the property if it passes a federal housing quality inspection and the rent falls within fair market limits for the area.</p>
+        <p>The agency declined to confirm a relationship with Williams, saying it doesn’t track landlord-specific data.</p>
+        <p>Williams says that just in the last month, he’s rented over 20 newly renovated homes to voucher holders.</p>
+        <p>Williams feels a personal connection to the voucher program. When he was young, his parents divorced, and he “ended up living in a boarded up duplex with my dad on an air mattress.”</p>
+        <p>“A seed was planted,” he continued. “A lot of Section 8 tenants are really, really good people…they just need housing.”</p>
+        <p>According to the 2020 Census, Cleveland has over 31,000 vacant houses. Williams believes this inventory means no one should be without a home.</p>
+        <p>Investors like Williams see vouchers as reliable income. A guaranteed monthly check from the federal government.</p>
+        <p>They target houses where the federal voucher will pay more rent than a regular tenant in that neighborhood could afford.</p>
+        <p>There are 14,892 active vouchers in Cuyahoga County, according to Dorivette Nolan, who oversees policy, planning and voucher administration for CMHA.</p>
+        <p>Getting a voucher is hard. It can take years to get off the waiting list. There are currently 20,608 families waiting for a voucher.</p>
+        <p>Using one is also hard. Voucher holders need a specific kind of housing. They need a landlord willing to accept the voucher, a unit that passes a HUD inspection, and rent within the fair market rate.</p>
+        <p>Williams wants tenants who will stay long-term.</p>
+        <p>CMHA reports that fewer than half of people found housing within 6 months of receiving a voucher. When Williams says in his videos that his Section 8 tenants “don’t want to leave” because “where else is there?” — he’s not exaggerating.</p>
+        <p>Williams says he’s evicted about six tenants this year.</p>
+      </div>
+    </div>
+    <div class="jw-item jw-item-right">
+      <div class="jw-card jw-item-card" data-bg="https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-2-scaled.jpg">
+        <p class="jw-item-sub">Housing officials fear that investors like Williams can price first-time home buyers out of the market.</p>
+        <p>Williams pushes back on the idea that he’s pricing anyone out. The homes he buys, he says, are “little crack houses” using language that sparked outrage from residents and council members last summer. But he says those homes are in such disrepair that “no first-time buyer is going to be able to get financing on them.”</p>
+        <p>City housing records about his properties complicate this claim. While several came with deferred maintenance that makes them less move-in ready, Williams’ portfolio is not uniformly what would be considered run-down.</p>
+        <p>The properties in his portfolio are mostly aging single-family homes in low-value, distressed submarkets.</p>
+        <p>Martin-O’Toole and Kobie say the harm doesn’t depend on whether a first-time buyer could have bought the house. Every home that goes to an investor is a home that doesn’t anchor family wealth in a community.</p>
+        <p>When a house sells to a family that lives in the home, called owner-occupants, it stays in the ownership stock. When the owner moves out, another family can buy it.</p>
+        <p>When a house sells to an LLC for rental, units are removed from the marketplace, and investor competition can drive up prices.</p>
+        <p>According to Martin-O’Toole, investors have several advantages when buying these homes, such as access to capital that enables them to offer all-cash and a fast close. A family needs a mortgage, an appraisal, an inspection contingency.</p>
+      </div>
+    </div>
+    <div class="jw-item jw-item-right">
+      <div class="jw-card jw-item-card" data-bg="https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-3-scaled.jpg">
+        <p class="jw-item-sub">Investors disproportionately purchase in predominantly Black neighborhoods.</p>
+        <p>On Cleveland’s East Side, owner-occupancy has dropped more than 30% between 2000 and 2021, according to Frank Ford, Senior Policy Advisor at the Fair Housing Center.</p>
+        <p>In 2022, the U.S. House Financial Services Subcommittee found that housing investors disproportionately invest in neighborhoods with large Black communities.</p>
+        <p>Williams’ own buying patterns track that geography. His properties cluster in neighborhoods like Kinsman and Lee-Harvard and inner-ring suburbs like Maple Heights, historically Black areas with higher rates of poverty on the city’s southeast side.</p>
+        <p>He’s tried to buy on the West Side, he said, but “it gets pretty hard over there.”</p>
+        <p>Section 8 was designed to give voucher holders mobility — a chance to move out of high-poverty neighborhoods into areas with better schools, jobs, and safety. In practice, they end up clustered in the same neighborhoods, with a small number of landlords willing to accept them.</p>
+        <p>The neighborhoods where his model works are the same ones the program was supposed to help families leave.</p>
+        <p>Investors also make it harder for families to accumulate wealth within their own communities. Homeownership has long been a pathway to the American middle class.</p>
+        <p>When investors replace owner-occupants, a renter pays down the investor’s mortgage and builds the investor’s equity instead of their own. Multiply across a neighborhood and the foregone equity is what becomes a measurable community wealth effect.</p>
+        <p>“You get this cycle of disinvestment that just keeps going,” Kobie said.</p>
+      </div>
+    </div>
+    <div class="jw-item jw-item-right">
+      <div class="jw-card jw-item-card" data-bg="https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-10-scaled.jpg">
+        <p class="jw-item-sub">Williams isn’t the only investor using this playbook.</p>
+        <p>Williams alone has little impact. Dozens of investors using the same strategy do.</p>
+        <p>The same strategy—buying cheap, renovating for Section 8, and selling the model to out-of-state investors—is documented across online platforms like Instagram and YouTube.</p>
+        <p>James Wise, a self-declared “Section 8 millionaire,” runs a YouTube channel called HoltonWiseTV. Its episodes promise to teach investors how to “fix up Section 8 slum housing” and “make money buying ghetto housing” in Cleveland.</p>
+        <p>During his 2021 campaign, Mayor Justin Bibb held a press conference outside a Holton-Wise property. Bibb said that when elected, he would put tenants first and hold property managers like Holton-Wise accountable.</p>
+        <p>Residents First is the Bibb administration’s overhaul of Cleveland’s code enforcement system, the first major update in years. It cracks down on negligent landlords by requiring out-of-town owners to designate a local agent who can be sued. Inspectors can also issue $200 civil tickets that get attached to unpaid property tax bills, which Martin-O’Toole says has been especially effective at getting absentee investors to pay attention.</p>
+        <p>According to Kobie, larger investors begin to underestimate the work required to actually maintain what they’ve bought. They are not interested in spending a lot of money to rehab these properties. They’re slow to register rental properties with the city, slow to respond to housing code violation notices, and slow to do the basic work of being a landlord at scale.</p>
+        <p>Kobie explained that some investors “don’t have regular maintenance as a part of their business model.”</p>
+        <p>“They’re milking properties to get as much extraction out of it as they can without putting in the proper investment,” added Martin-O’Toole.</p>
+      </div>
+    </div>
+    <div class="jw-item jw-item-right">
+      <div class="jw-card jw-item-card" data-bg="https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-8-scaled.jpg">
+        <p class="jw-item-sub">Williams rejects the premise. He says his operation is built to scale without slipping.</p>
+        <p>“We have exceptional property management,” Williams said. “Our main focus is building a portfolio built on a bed of granite, not in a house of sand.”</p>
+        <p>“If there was a problem with the property management, you would definitely hear about it on Reddit,” he said.</p>
+        <p>Good investors follow the law, Martin-O’Toole said. If properties are code-compliant, rentals are registered, and lead-safe certifications are in place, the city is happy to have you.</p>
+        <p>“If you thought you could come to Cleveland and let a few things rot on the vine, and no one was going to care, it’s untrue,” Martin-O’Toole said.</p>
+        <p>Housing officials credit Williams as mostly cooperative — he has registered his rentals, pulled permits, worked with housing authorities. Whether this holds as Williams chases 1,000 homes remains to be seen.</p>
+      </div>
+    </div>
+    <div class="jw-item jw-item-right">
+      <div class="jw-card jw-item-card jw-item-caption" data-bg="https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-11-scaled.jpg">
+        <p>Williams says he isn’t worried about how it looks now.</p>
+        <p>“The only thing that matters is what you’ve done,” he said. “What everyone says in the beginning, the middle is kind of irrelevant. Everyone forgets about that. All they remember is what was actually achieved.”</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -291,7 +401,10 @@
   var hLine2   = scrolly.querySelector('.jw-headline-l2');
   var captionCard  = scrolly.querySelector('.jw-caption-card');
   var pivotCard    = scrolly.querySelector('.jw-pivot-card');
-  var itemEls  = [].slice.call(scrolly.querySelectorAll('.jw-item-card'));
+  // each match is the one thing that moves as a rigid unit inside a .jw-item:
+  // usually a lone .jw-item-card, or a .jw-item-stack grouping several cards
+  // (e.g. a card + a note) that should scroll and be measured together
+  var itemEls  = [].slice.call(scrolly.querySelectorAll('.jw-item > .jw-item-card, .jw-item > .jw-item-stack'));
   var capEmHl  = scrolly.querySelector('.jw-cap-em-hl');
   var cmts     = [].slice.call(scrolly.querySelectorAll('.jw-cmt'));
 
@@ -350,11 +463,14 @@
   // photo once scroll reaches it -- each gets its own layer (painted over
   // whatever was showing before, same trick as the closeup->billboard
   // crossfade above) that fades in across the empty gap right before that
-  // card arrives. No JS edits needed to add more of these later.
-  var bgSwaps = itemEls.filter(function(el){ return el.dataset.bg; }).map(function(el){
+  // card arrives. No JS edits needed to add more of these later. (data-bg
+  // may be on the stack unit itself, or on a card nested inside it.)
+  function findBg(el){ return el.dataset.bg ? el : el.querySelector('[data-bg]'); }
+  var bgSwaps = itemEls.filter(findBg).map(function(el){
+    var src = findBg(el);
     var layer = document.createElement('div');
     layer.className = 'jw-layer';
-    layer.style.backgroundImage = "url('"+el.dataset.bg+"')";
+    layer.style.backgroundImage = "url('"+src.dataset.bg+"')";
     layer.style.opacity = '0';
     zoom.appendChild(layer);
     return { cardEl: el, layer: layer, start: 0, end: 0 };
