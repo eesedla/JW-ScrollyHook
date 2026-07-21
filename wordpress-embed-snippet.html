@@ -5,13 +5,22 @@
   Paste this into a "Custom HTML" block in the WordPress post/page where the
   scrolly should appear.
 
-  How the pin works: .jw-embed-wrap is a tall invisible "track" (420vh) that
+  How the pin works: .jw-embed-wrap is a tall invisible "track" (734vh) that
   gives you scroll room. .jw-embed-sticky pins at the top of the viewport
   (100vh) for the whole time the track is scrolling past. As you scroll, the
   JS below measures how far through the track you are (0 -> 1) and sends
   that number into the child iframe via pym's postMessage channel; the child
   uses it to drive all its internal animations. The child itself never
   scrolls — only this wrapper does.
+
+  KEEPING THE TRACK HEIGHT IN SYNC: index.html now builds its own timeline
+  from a growing list of ".jw-item-card" sections (see the comment above the
+  first one in index.html), and computes its own required scroll room as
+  TOTAL_VH + 100 in vh. Every time a new item is added there, TOTAL_VH grows
+  and --jw-scroll-length below must be bumped to match, or the parent will
+  finish its scroll (and un-pin the image) before the child has played
+  through everything. Open index.html standalone, check what it sets
+  scrolly.style.height to (that's the number you want), and copy it here.
 
   BEFORE PUBLISHING:
   1. Swap CHILD_URL below for wherever index.html actually lives.
@@ -26,9 +35,9 @@
   2. Double-check index.html's own --img-closeup / --img-billboard vars
      point at real Media Library image URLs (not REPLACE_... placeholders).
   3. Adjust --jw-scroll-length below if you want the pinned experience to
-     take more or less scrolling to complete (420vh matches the child's own
-     standalone preview length, so it feels the same as when you test
-     index.html directly in a browser).
+     take more or less scrolling to complete (734vh matches the child's own
+     standalone preview length today -- see the "KEEPING THE TRACK HEIGHT IN
+     SYNC" note above, this needs to grow every time an item is added).
   4. FULL-BLEED: two separate problems had to be solved to get
      #jw-embed-wrap to truly span the whole browser width:
        a) WordPress/Gutenberg themes (Newspack included) apply a default
@@ -107,7 +116,7 @@
     position:relative!important;
     width:100vw!important;
     max-width:none!important;
-    height:var(--jw-scroll-length, 420vh)!important;
+    height:var(--jw-scroll-length, 734vh)!important;
     margin-top:0!important;
     margin-bottom:0!important;
   }

@@ -22,7 +22,7 @@
 <title>John Williams — hook</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,500;0,600;0,700;1,500&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
 <style>
   :root{
     /* ==== REPLACE THESE THREE WITH YOUR MEDIA LIBRARY URLS ==== */
@@ -33,7 +33,7 @@
   }
   html,body{ margin:0; background:#404f54; }
 
-  .jw-scrolly{ position:relative; height:100vh; }      /* JS sets 420vh when standalone */
+  .jw-scrolly{ position:relative; height:100vh; }      /* JS sets height from TOTAL_VH when standalone */
   .jw-sticky{
     position:sticky; top:0; height:100vh; overflow:hidden;
     display:flex; align-items:center; justify-content:center;
@@ -52,7 +52,7 @@
   /* shared "story card" -- these slide up from below the frame, hold, then
      continue sliding up and out, so they read as physically scrolling over
      the pinned photo rather than just fading in place */
-  .jw-card{ box-sizing:border-box; background:#f4f0e6; border-radius:14px;
+  .jw-card{ box-sizing:border-box; background:#fff; border-radius:14px;
             box-shadow:0 20px 50px rgba(0,0,0,.4); opacity:0; will-change:opacity,transform; }
 
   .jw-cmt{ position:absolute; margin:0; max-width:min(38vw,340px); opacity:1;
@@ -60,7 +60,7 @@
 
   /* Reddit-style comment card */
   .jw-rd-card{ box-sizing:border-box; display:flex; gap:8px; align-items:flex-start;
-               background:#f4f0e6; border:1px solid #ccd8db; border-radius:10px;
+               background:#fff; border:1px solid #ccd8db; border-radius:10px;
                padding:10px 12px 10px 8px; box-shadow:0 8px 24px rgba(0,0,0,.35); }
   .jw-rd-vote{ display:flex; flex-direction:column; align-items:center; gap:3px;
                flex:0 0 auto; line-height:1; padding-top:1px; }
@@ -113,8 +113,9 @@
                        font-weight:500; font-size:clamp(21px,2.6vw,30px); line-height:1.45; }
   .jw-cap-l1{ margin-bottom:.7em!important; }
   .jw-cap-em{ font-style:italic; }
-  .jw-cap-em-l1,.jw-cap-em-l2{ padding:.05em .12em; background-image:linear-gradient(#f4c913,#f4c913);
-              background-repeat:no-repeat; background-position:0 50%; background-size:0% 100%; }
+  .jw-cap-em-hl{ padding:.05em .12em; background-image:linear-gradient(#f4c913,#f4c913);
+                 background-repeat:no-repeat; background-position:0 50%; background-size:0% 100%;
+                 box-decoration-break:clone; -webkit-box-decoration-break:clone; }
 
   @media (max-width:600px){
     .jw-caption-card{ max-width:82vw; }
@@ -127,11 +128,30 @@
                      font-weight:700; font-size:clamp(20px,2.9vw,34px); line-height:1.3; text-transform:uppercase; }
   .jw-pivot-card span{ color:#d64d4d; }
 
+  .jw-item{ position:absolute; inset:0; display:flex; align-items:center; justify-content:flex-start;
+            padding:0 3vw; }
+  .jw-item-right{ justify-content:flex-end; }
+  .jw-item-card{ max-width:min(820px,42vw);
+                 padding:clamp(22px,2.6vw,34px) clamp(26px,3vw,38px); }
+  .jw-item-card p{ margin:0; color:#404f54; font-family:'Inter',-apple-system,Segoe UI,Roboto,sans-serif;
+                    font-weight:400; font-size:clamp(18px,1.9vw,21px); line-height:1.75; }
+  .jw-item-card p + p{ margin-top:1em; }
+  .jw-item-card p.jw-item-sub{ font-family:'Roboto Condensed',-apple-system,Segoe UI,Roboto,sans-serif;
+                                font-weight:700; font-size:1.4em; line-height:1.3; }
+  .jw-item-card p a{ color:#111; text-decoration:underline; text-decoration-color:#23685b;
+                      text-decoration-thickness:2px; transition:all 100ms ease-in; }
+
+  /* the pivot and every item card scroll as a literal, fully opaque part of
+     the page (see the JS "stack" below) rather than fading in like the
+     headline/caption reveal cards, so they never inherit .jw-card's opacity:0 */
+  .jw-pivot-card,.jw-item-card{ opacity:1; }
+
   @media (max-width:600px){
     .jw-cmt{ max-width:78vw; }
     .jw-cmt2,.jw-cmt4{ left:6%; right:auto; }
     .jw-rd-body{ font-size:15px; }
     .jw-pivot-card{ max-width:82vw; }
+    .jw-item-card{ max-width:82vw; }
   }
   @media (prefers-reduced-motion:reduce){
     .jw-zoom{ transform:scale(1)!important; }
@@ -139,7 +159,7 @@
     .jw-cmt1,.jw-cmt3{ opacity:1!important; transform:none!important; }
     .jw-headline-card,.jw-caption-card{ opacity:1!important; transform:none!important; }
     .jw-headline-l1{ opacity:1!important; transform:none!important; }
-    .jw-cap-em-l1,.jw-cap-em-l2{ background-size:100% 100%!important; }
+    .jw-cap-em-hl{ background-size:100% 100%!important; }
   }
 </style>
 </head>
@@ -160,7 +180,7 @@
     <div class="jw-caption">
       <div class="jw-card jw-caption-card">
         <p class="jw-cap-l1">John Williams caught Cleveland’s attention last summer with a billboard that read “Yes! I buy crack houses.”</p>
-        <p class="jw-cap-l2">Online and beyond, Clevelanders have found common ground: <em class="jw-cap-em"><span class="jw-cap-em-l1">they can’t stand John</span> <span class="jw-cap-em-l2">Williams.</span></em></p>
+        <p class="jw-cap-l2">Online and beyond, Clevelanders have found common ground: <em class="jw-cap-em"><span class="jw-cap-em-hl">they can’t stand John Williams.</span></em></p>
       </div>
     </div>
     <blockquote class="jw-cmt jw-cmt1"><div class="jw-rd-card">
@@ -218,6 +238,40 @@
         <p>Lost in the billboard outrage is a quieter question: <span>what happens to these neighborhoods when investors—most without billboards—scale Williams’ playbook.</span></p>
       </div>
     </div>
+    <!-- "items": the ongoing sequence of body-copy cards that scroll over the
+         pinned photo, stacked top-to-bottom behind it and moving 1:1 with
+         scroll like a normal, fully opaque block of page content -- not a
+         fade-in. To add the article's next section, copy one of these blocks
+         (own .jw-item wrapper + .jw-item-card) and keep it left-anchored so
+         the photo stays visible on the right. No JS edits needed -- the
+         stack below measures every .jw-item-card's own height and lays them
+         out (and grows the required scroll room) automatically. -->
+    <div class="jw-item">
+      <div class="jw-card jw-item-card">
+        <p>Williams removed the “I buy crack houses” billboard after pushback from Cleveland Council President Blaine Griffin, but he’s not backing down from his in-your-face marketing strategy.</p>
+        <p>Williams believes the local virality of his billboards only helps his business even when the attention is negative. He’s hoping to reach potential sellers. “They’ll see a billboard and [think] I’ll see what the guy will give me,” he explained.</p>
+        <p>A new set of billboards say simply, “I hate John Williams,” defaced with fake graffiti.</p>
+        <p>Cleveland housing experts agree that John Williams is not a problem on his own. His aggressive marketing, however, makes him a recognizable face of the popular investment strategy currently shaping Cleveland’s neighborhoods.</p>
+      </div>
+    </div>
+    <!-- data-bg: swaps the pinned photo to this image once scroll reaches
+         this card -- the crossfade timing is computed automatically in the
+         empty gap right before the card arrives (see buildStack() in the JS) -->
+    <div class="jw-item jw-item-right">
+      <div class="jw-card jw-item-card" data-bg="https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-11-scaled.jpg">
+        <p>Williams came to Cleveland about 18 months ago from South Florida. “Cleveland has a lot going for it. It’s affordable. There’s good food. There’s a lot of people who love sports. Cleveland is a great place,” he told Signal Cleveland in an interview.</p>
+        <p>Now, Williams lives here full time, and despite pushback, he says he plans to buy 1,000 Cleveland homes over the next two years.</p>
+        <p>That’s likely a stretch, according to property data and local leaders keeping tabs on his activity. Cleveland’s Building and Housing Director Sally Martin-O’Toole and analyst Timothy Kobie agree that, despite his visibility, Williams is not their biggest concern.</p>
+        <p class="jw-item-sub">“He’s only the king of the properties he can pick up,” said O’Toole. “So he’s trying, but he’s not getting too far.”</p>
+        <p>In an April YouTube video, Williams said he personally owns 17 homes in Greater Cleveland, and his network of investors owns 130 properties total. A review of Cuyahoga County property records found 25 properties held by 10 LLCs registered to Williams’ business address on Clark Avenue.</p>
+        <p>When asked to confirm this count, Williams disputed it but declined to provide an up-to-date number. He said his network’s properties are held by separate owners under different LLCs. He acknowledged that he occasionally lets others use his office address for mail, but said the properties aren’t all his.</p>
+        <p class="jw-item-sub">Cleveland sits in what city housing officials call “that weird value spot for investors.”</p>
+        <p>Property values here are low enough that out-of-state buyers can scoop up homes cheaply, but high enough that flipping or renting them out can turn a real profit.</p>
+        <p>While filming outside a property in Garfield Heights, Williams broke down the math. He said he bought the house for about $65,000, spent $35,000 on renovations, and rented it out for $1,550 a month.</p>
+        <p>Williams claims he has gotten returns of 16% on his investments in Greater Cleveland.</p>
+        <p>Using his social media, Williams sells these numbers to out-of-state investors. Through a paid real estate investment service called <a href="https://singlefamilyinvestors.com/#contact" target="_blank" rel="noopener">Single Family Investors</a>, Williams helps investors buy and renovate homes, find tenants, and then his company, <a href="https://singlefamilymanagement.com/" target="_blank" rel="noopener">Single Family Management</a>, manages their properties in Greater Cleveland. With his services, investors don’t need to set foot in Cleveland to profit from their investments here.</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -226,6 +280,7 @@
 <script>
 (function(){
   var reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var embedded = (window.self !== window.top);
 
   var scrolly  = document.querySelector('.jw-scrolly');
   var zoom     = scrolly.querySelector('.jw-zoom');
@@ -236,23 +291,21 @@
   var hLine2   = scrolly.querySelector('.jw-headline-l2');
   var captionCard  = scrolly.querySelector('.jw-caption-card');
   var pivotCard    = scrolly.querySelector('.jw-pivot-card');
-  var capEmL1  = scrolly.querySelector('.jw-cap-em-l1');
-  var capEmL2  = scrolly.querySelector('.jw-cap-em-l2');
+  var itemEls  = [].slice.call(scrolly.querySelectorAll('.jw-item-card'));
+  var capEmHl  = scrolly.querySelector('.jw-cap-em-hl');
   var cmts     = [].slice.call(scrolly.querySelectorAll('.jw-cmt'));
 
   function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
-  function ramp(p,a,b){ return clamp((p-a)/(b-a),0,1); }
-  function pulse(p,a,b,c,d){ return Math.min(ramp(p,a,b), 1-ramp(p,c,d)); }
+  function ramp(v,a,b){ return clamp((v-a)/(b-a),0,1); }
+  function pulse(v,a,b,c,d){ return Math.min(ramp(v,a,b), 1-ramp(v,c,d)); }
 
-  // cards enter by sliding up from below the frame and fading in, hold while
-  // readable, then continue sliding up and fading out -- so they read as
-  // physically scrolling past over the pinned photo, not just fading in place
-  function cardMotion(p,a,b,c,d,offset){
+  // the headline/caption reveals are the "hero" beats: a subtle nudge + fade
+  function cardMotion(v,a,b,c,d,offset){
     offset = offset || 56;
-    var inV  = ramp(p,a,b);
-    var outV = ramp(p,c,d);
+    var inV  = ramp(v,a,b);
+    var outV = ramp(v,c,d);
     var opacity = Math.min(inV, 1-outV);
-    var y = p<=b ? offset*(1-inV) : (p>=c ? -offset*outV : 0);
+    var y = v<=b ? offset*(1-inV) : (v>=c ? -offset*outV : 0);
     return { opacity:opacity, y:y };
   }
   function applyCard(el,m){
@@ -260,61 +313,148 @@
     el.style.transform = 'translateY('+m.y.toFixed(2)+'px)';
   }
 
-  // p is 0 -> 1 across the whole hook
-  function render(p){
+  // ---- timeline, in absolute vh so new sections can be appended below
+  // without ever having to rescale an earlier breakpoint by hand ----
+  var T = {
+    pullbackEnd: 252,
+    billboardIn: [126, 202],
+    closeupOut:  [134, 193],
+
+    headlineCard: [0, 21, 118, 134],
+    hLine1:       [25, 38, 63, 76],
+    hLine2:       [80, 92, 109, 122],
+
+    captionCard: [151, 172, 302, 319],
+    emSweep:     [235, 256],
+
+    commentsStart:   319,
+    commentsStagger: 6,
+    commentsWidth:   8,
+    commentsExit:    [378, 399]
+  };
+
+  // The pivot and every .jw-item-card after it behave like a literal chunk of
+  // scrolling page content stacked behind the sticky photo: fully opaque,
+  // sized to their own natural height (no clipping, no forced pause), and
+  // translated 1:1 with scroll -- not eased, not faded. buildStack() measures
+  // each card's real rendered height and lays them out top-to-bottom, so
+  // adding a new .jw-item-card (see the HTML comment above the first one)
+  // just grows the stack automatically.
+  var STACK_START  = T.commentsExit[1] + 40; // vh of empty photo after comments clear
+  var STACK_BUFFER = 80; // vh of approach+recede room around each card
+  var stackEls = [pivotCard].concat(itemEls);
+  var stack = [];
+  var TOTAL_VH = 0;
+
+  // Any .jw-item-card can carry data-bg="<image url>" to swap the pinned
+  // photo once scroll reaches it -- each gets its own layer (painted over
+  // whatever was showing before, same trick as the closeup->billboard
+  // crossfade above) that fades in across the empty gap right before that
+  // card arrives. No JS edits needed to add more of these later.
+  var bgSwaps = itemEls.filter(function(el){ return el.dataset.bg; }).map(function(el){
+    var layer = document.createElement('div');
+    layer.className = 'jw-layer';
+    layer.style.backgroundImage = "url('"+el.dataset.bg+"')";
+    layer.style.opacity = '0';
+    zoom.appendChild(layer);
+    return { cardEl: el, layer: layer, start: 0, end: 0 };
+  });
+
+  function buildStack(){
+    var cursor = STACK_START;
+    stack = stackEls.map(function(el){
+      var h = el.offsetHeight / window.innerHeight * 100;
+      var center = cursor + STACK_BUFFER/2 + h/2;
+      cursor = cursor + STACK_BUFFER + h;
+      return { el: el, center: center };
+    });
+    TOTAL_VH = cursor + STACK_BUFFER/2;
+
+    bgSwaps.forEach(function(swap){
+      var idx = stackEls.indexOf(swap.cardEl);
+      var prevCenter = idx > 0 ? stack[idx-1].center : STACK_START - STACK_BUFFER;
+      var mid = (prevCenter + stack[idx].center) / 2;
+      swap.start = mid - 20;
+      swap.end   = mid + 20;
+    });
+  }
+  buildStack();
+
+  // v is vh scrolled through the track (0 -> TOTAL_VH)
+  function render(v){
     if(reduce) return;
-    zoom.style.transform = 'scale('+(1.4 - 0.4*ramp(p,0,0.6)).toFixed(4)+')';
-    billboard.style.opacity = ramp(p,0.30,0.48).toFixed(3);
-    closeup.style.opacity   = (1-ramp(p,0.32,0.46)).toFixed(3);
+    zoom.style.transform = 'scale('+(1.4 - 0.4*ramp(v,0,T.pullbackEnd)).toFixed(4)+')';
+    billboard.style.opacity = ramp(v,T.billboardIn[0],T.billboardIn[1]).toFixed(3);
+    closeup.style.opacity   = (1-ramp(v,T.closeupOut[0],T.closeupOut[1])).toFixed(3);
 
-    applyCard(headlineCard, cardMotion(p, 0.00,0.05, 0.28,0.32));
-    // headline box sticks in place while its two lines scroll through inside it
-    applyCard(hLine1, cardMotion(p, 0.06,0.09, 0.15,0.18, 22));
-    applyCard(hLine2, cardMotion(p, 0.19,0.22, 0.26,0.29, 22));
-    applyCard(captionCard,  cardMotion(p, 0.36,0.41, 0.72,0.76));
-
-    var emSweep1 = ramp(p,0.56,0.585);
-    capEmL1.style.backgroundSize = (emSweep1*100).toFixed(1)+'% 100%';
-    var emSweep2 = ramp(p,0.585,0.61);
-    capEmL2.style.backgroundSize = (emSweep2*100).toFixed(1)+'% 100%';
-
-    cmts.forEach(function(el,i){
-      var start = 0.76 + i*0.014;
-      var v = pulse(p, start, start+0.02, 0.90, 0.95);
-      el.style.opacity = v.toFixed(3);
-      el.style.transform = el.classList.contains('jw-cmt-center')
-        ? 'translate(-50%,'+(10-10*v)+'px)'
-        : 'translateY('+(10-10*v)+'px)';
+    bgSwaps.forEach(function(swap){
+      swap.layer.style.opacity = ramp(v, swap.start, swap.end).toFixed(3);
     });
 
-    var pv = ramp(p,0.92,0.99);
-    pivotCard.style.opacity = pv.toFixed(3);
-    pivotCard.style.transform = 'translateY('+(56*(1-pv)).toFixed(2)+'px)';
+    applyCard(headlineCard, cardMotion(v, T.headlineCard[0],T.headlineCard[1], T.headlineCard[2],T.headlineCard[3]));
+    // headline box sticks in place while its two lines scroll through inside it
+    applyCard(hLine1, cardMotion(v, T.hLine1[0],T.hLine1[1], T.hLine1[2],T.hLine1[3], 22));
+    applyCard(hLine2, cardMotion(v, T.hLine2[0],T.hLine2[1], T.hLine2[2],T.hLine2[3], 22));
+    applyCard(captionCard, cardMotion(v, T.captionCard[0],T.captionCard[1], T.captionCard[2],T.captionCard[3]));
+
+    var emSweep = ramp(v,T.emSweep[0],T.emSweep[1]);
+    capEmHl.style.backgroundSize = (emSweep*100).toFixed(1)+'% 100%';
+
+    cmts.forEach(function(el,i){
+      var start = T.commentsStart + i*T.commentsStagger;
+      var cv = pulse(v, start, start+T.commentsWidth, T.commentsExit[0], T.commentsExit[1]);
+      el.style.opacity = cv.toFixed(3);
+      el.style.transform = el.classList.contains('jw-cmt-center')
+        ? 'translate(-50%,'+(10-10*cv)+'px)'
+        : 'translateY('+(10-10*cv)+'px)';
+    });
+
+    stack.forEach(function(item){
+      item.el.style.transform = 'translateY('+(item.center - v).toFixed(2)+'vh)';
+    });
   }
 
-  var embedded = (window.self !== window.top);
+  var ticking=false;
+  function onScroll(){
+    if (embedded) return; // production drives render() straight from pym messages
+    if(ticking) return; ticking=true;
+    requestAnimationFrame(function(){
+      var rect = scrolly.getBoundingClientRect();
+      var p = clamp(-rect.top/(rect.height-window.innerHeight),0,1);
+      render(p * TOTAL_VH);
+      ticking=false;
+    });
+  }
+  function recompute(){
+    buildStack();
+    if (!embedded){
+      scrolly.style.height = (TOTAL_VH + 100) + 'vh';
+      onScroll();
+    }
+  }
 
   if (embedded && window.pym){
-    // PRODUCTION: parent relays scroll progress; stay one screen tall.
+    // PRODUCTION: parent relays scroll progress (0->1 over its own track,
+    // sized to match TOTAL_VH below -- see wordpress-embed-snippet.html);
+    // convert back to our internal vh space and stay one screen tall.
     var child = new pym.Child({ polling: 0 });
-    child.onMessage('progress', function(v){ render(parseFloat(v)); });
+    child.onMessage('progress', function(pStr){ render(parseFloat(pStr) * TOTAL_VH); });
     render(0);
-    window.addEventListener('resize', function(){ child.sendHeight(); });
+    window.addEventListener('resize', function(){ buildStack(); child.sendHeight(); });
   } else {
-    // STANDALONE PREVIEW: give the page its own scroll room and self-drive.
-    scrolly.style.height = '420vh';
-    var ticking=false;
-    function onScroll(){
-      if(ticking) return; ticking=true;
-      requestAnimationFrame(function(){
-        var rect = scrolly.getBoundingClientRect();
-        render(clamp(-rect.top/(rect.height-window.innerHeight),0,1));
-        ticking=false;
-      });
-    }
+    // STANDALONE PREVIEW: give the page its own scroll room (auto-sized from
+    // TOTAL_VH, so adding items grows this automatically) and self-drive.
+    scrolly.style.height = (TOTAL_VH + 100) + 'vh';
     window.addEventListener('scroll', onScroll, {passive:true});
-    window.addEventListener('resize', onScroll);
+    window.addEventListener('resize', recompute);
     onScroll();
+  }
+
+  // web fonts can finish loading after the first measurement above, which can
+  // shift wrapped line counts (Roboto Condensed especially) -- remeasure once
+  // they're ready so the stack doesn't stay pinned to fallback-font heights
+  if (document.fonts && document.fonts.ready){
+    document.fonts.ready.then(recompute);
   }
 })();
 </script>
