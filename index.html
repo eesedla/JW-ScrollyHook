@@ -88,7 +88,14 @@
   .jw-cmt3 .jw-rd-avatar{ background:linear-gradient(135deg,#e56430,#c2410c); }
   .jw-cmt4{ bottom:6%; right:5%; max-width:min(28vw,300px); }
   .jw-cmt-center{ transform:translate(-50%,10px); }
-  .jw-cmt5{ top:72%; left:72%; max-width:min(42vw,460px); }
+  /* explicit width, not max-width: this is centered via jw-cmt-center's
+     translate(-50%) on a left:72% anchor, so with width:auto the browser's
+     shrink-to-fit sizing only sees the 28% of viewport to the right of that
+     anchor as "available" and shrinks into that regardless of max-width --
+     an explicit width sidesteps that and sizes from the full viewport.
+     max-width:none clears .jw-cmt's own min(38vw,340px) cap above, which
+     would otherwise still clamp this width right back down. */
+  .jw-cmt5{ top:72%; left:72%; width:min(60vw,460px); max-width:none; }
   .jw-cmt5 .jw-rd-avatar{ background:linear-gradient(135deg,#23685b,#173f38); }
   .jw-cmt6{ top:8%; left:55%; max-width:min(30vw,340px); }
   .jw-cmt6 .jw-rd-avatar{ background:linear-gradient(135deg,#d64d4d,#b53a3a); }
@@ -168,6 +175,17 @@
     .jw-cmt2,.jw-cmt4{ left:6%; right:auto; }
     .jw-rd-body{ font-size:15px; }
     .jw-item-card{ max-width:82vw; }
+  }
+  /* .jw-sticky is a full 100vh tall, so on a narrow/portrait screen
+     background-size:cover crops hard into the sides of these wide photos --
+     center (the default) pushes the actual subject (the sign, the
+     billboard) out of frame entirely below ~768px wide. Shift the crop
+     toward where the subject actually sits for just the photos where that
+     happens. The dynamically-created data-bg layers carry their source
+     data-bg url too (see bgSwaps in the JS), so they can be targeted here. */
+  @media (max-width:768px){
+    .jw-billboard{ background-position:75% 40%; }
+    .jw-layer[data-bg*="Billboards-2-scaled"]{ background-position:15% 45%; }
   }
   @media (prefers-reduced-motion:reduce){
     .jw-zoom{ transform:scale(1)!important; }
@@ -488,6 +506,7 @@
     var layer = document.createElement('div');
     layer.className = 'jw-layer';
     layer.style.backgroundImage = "url('"+src.dataset.bg+"')";
+    layer.dataset.bg = src.dataset.bg; // lets CSS target a specific photo, e.g. for a custom background-position
     if (mode === 'slide'){
       layer.style.opacity = '1';
       layer.style.transform = 'translateY(100vh)';
