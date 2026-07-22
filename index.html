@@ -22,7 +22,7 @@
 <title>John Williams — hook</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&family=Roboto+Condensed:wght@300..700&display=swap" rel="stylesheet">
 <style>
   :root{
     /* ==== REPLACE THESE THREE WITH YOUR MEDIA LIBRARY URLS ==== */
@@ -30,8 +30,10 @@
     --img-billboard: url('https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-12-scaled.jpg');
     /* ========================================================== */
     --fallback: linear-gradient(135deg,#404f54,#23685b);
+    --font-body: "Inter", "Helvetica", sans-serif;
+    --font-heading: "Roboto Condensed", "Helvetica", sans-serif;
   }
-  html,body{ margin:0; background:#404f54; }
+  html,body{ margin:0; background:#404f54; font-family:var(--font-body); }
 
   .jw-scrolly{ position:relative; height:100vh; }      /* JS sets height from TOTAL_VH when standalone */
   .jw-sticky{
@@ -68,10 +70,10 @@
   .jw-rd-head{ display:flex; flex-wrap:wrap; align-items:baseline; gap:5px; margin-bottom:4px; }
   .jw-rd-avatar{ width:18px; height:18px; border-radius:50%; flex:0 0 auto;
                  background:linear-gradient(135deg,#51a89a,#23685b); }
-  .jw-rd-user{ color:#404f54; font:700 clamp(11px,1.05vw,13px)/1.2 'Inter',sans-serif; }
-  .jw-rd-sub{ color:#879599; font:500 clamp(10px,0.95vw,12px)/1.2 'Inter',sans-serif; }
-  .jw-rd-body{ margin:0; color:#404f54; font:400 clamp(14px,1.6vw,17px)/1.4 'Inter',sans-serif; }
-  .jw-rd-source{ margin:3px 0 0; color:#879599; font:500 clamp(10px,0.95vw,12px)/1.2 'Inter',sans-serif; }
+  .jw-rd-user{ color:#404f54; font:700 clamp(11px,1.05vw,13px)/1.2 var(--font-body); }
+  .jw-rd-sub{ color:#879599; font:500 clamp(10px,0.95vw,12px)/1.2 var(--font-body); }
+  .jw-rd-body{ margin:0; color:#404f54; font:400 clamp(14px,1.6vw,17px)/1.4 var(--font-body); }
+  .jw-rd-source{ margin:3px 0 0; color:#879599; font:500 clamp(10px,0.95vw,12px)/1.2 var(--font-body); }
 
   /* Blaine Griffin quote -- same card shell as the Reddit comments, dressed as a
      news attribution instead since it's a real interview quote, not a Reddit post */
@@ -99,17 +101,24 @@
 
   .jw-headline{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
                 padding:0 7vw; }
-  .jw-headline-card{ max-width:min(640px,64vw); padding:clamp(24px,3vw,44px) clamp(28px,3.4vw,48px);
-                      text-align:center; display:grid; overflow:hidden; }
-  .jw-headline-card p{ grid-area:1/1; margin:0; color:#404f54; font-family:'Roboto Condensed',-apple-system,Segoe UI,Roboto,sans-serif;
-                        font-weight:700; font-size:clamp(28px,4.4vw,48px); line-height:1.25;
+  .jw-headline-card{ max-width:min(800px,76vw); padding:clamp(32px,3.8vw,56px) clamp(36px,4.2vw,60px);
+                      text-align:center; display:grid; align-items:center; overflow:hidden; }
+  .jw-headline-card p{ grid-area:1/1; margin:0; color:#404f54; font-family:var(--font-heading);
+                        font-weight:700; font-size:calc(var(--newspack-theme-font-size-xxl, 2.2em) * 1.15); line-height:1.25;
                         opacity:0; will-change:opacity,transform; }
-  .jw-headline-l2{ color:#879599; font-weight:600; font-size:.6em; font-family:'Inter',sans-serif;
+  .jw-headline-l2{ color:#879599; font-weight:600; font-size:.6em; font-family:var(--font-body);
                     letter-spacing:.01em; }
+  /* mirrors the newspack-theme .entry-title responsive scale (2.2em -> 2.8em -> 3.2em), bumped up ~15% */
+  @media only screen and (min-width:782px){
+    .jw-headline-card p{ font-size:calc(var(--newspack-theme-font-size-xxxl, 2.8em) * 1.15); }
+  }
+  @media only screen and (min-width:1168px){
+    .jw-headline-card p{ font-size:calc(var(--newspack-theme-font-size-xxxxl, 3.2em) * 1.15); }
+  }
 
   .jw-caption{ position:absolute; top:50%; left:6%; transform:translateY(-50%); }
   .jw-caption-card{ max-width:min(560px,46vw); padding:clamp(22px,2.6vw,36px) clamp(26px,3vw,40px); }
-  .jw-caption-card p{ margin:0; color:#404f54; font-family:'Inter',-apple-system,Segoe UI,Roboto,sans-serif;
+  .jw-caption-card p{ margin:0; color:#404f54; font-family:var(--font-body);
                        font-weight:500; font-size:clamp(21px,2.6vw,30px); line-height:1.45; }
   .jw-cap-l1{ margin-bottom:.7em!important; }
   .jw-cap-em{ font-style:italic; }
@@ -121,13 +130,6 @@
     .jw-caption-card{ max-width:82vw; }
   }
 
-  .jw-pivot{ position:absolute; inset:0; display:flex; align-items:center; justify-content:flex-start;
-             padding:0 6vw; }
-  .jw-pivot-card{ max-width:min(560px,44vw); padding:clamp(22px,2.6vw,36px) clamp(26px,3vw,40px); }
-  .jw-pivot-card p{ margin:0; color:#404f54; font-family:'Inter',-apple-system,Segoe UI,Roboto,sans-serif;
-                     font-weight:500; font-size:clamp(21px,2.6vw,30px); line-height:1.45; }
-  .jw-pivot-card span{ color:#d64d4d; font-weight:700; }
-
   .jw-item{ position:absolute; inset:0; display:flex; align-items:center; justify-content:flex-start;
             padding:0 3vw; }
   .jw-item-right{ justify-content:flex-end; }
@@ -137,11 +139,11 @@
   .jw-item-stack{ display:flex; flex-direction:column; gap:clamp(16px,2vw,28px); }
   .jw-item-card{ max-width:min(920px,46vw);
                  padding:clamp(22px,2.6vw,34px) clamp(26px,3vw,38px); }
-  .jw-item-card p{ margin:0; color:#404f54; font-family:'Inter',-apple-system,Segoe UI,Roboto,sans-serif;
+  .jw-item-card p{ margin:0; color:#404f54; font-family:var(--font-body);
                     font-weight:400; font-size:clamp(18px,1.9vw,21px); line-height:1.75; }
   .jw-item-card p + p{ margin-top:1em; }
-  .jw-item-card p.jw-item-sub{ font-family:'Roboto Condensed',-apple-system,Segoe UI,Roboto,sans-serif;
-                                font-weight:700; font-size:1.4em; line-height:1.3; }
+  .jw-item-card p.jw-item-sub{ font-family:var(--font-heading);
+                                font-weight:700; font-size:2em; line-height:1.3; }
   .jw-item-card p a{ color:#111; text-decoration:underline; text-decoration-color:#23685b;
                       text-decoration-thickness:2px; transition:all 100ms ease-in; }
 
@@ -149,22 +151,28 @@
      read like the opening caption rather than a regular reporting card */
   .jw-item-caption p{ font-weight:500; font-size:clamp(21px,2.6vw,30px); line-height:1.45; }
 
+  /* the former standalone pivot card's lead line, now the opening paragraph
+     of the first item card -- styled as a sub head, same as .jw-item-sub,
+     with its accent phrase kept red */
+  .jw-item-card p.jw-pivot-lead{ font-family:var(--font-heading);
+                                  font-weight:700; font-size:2.2em; line-height:1.3; }
+  .jw-item-card p.jw-pivot-lead span{ color:#d64d4d; }
+
   /* a stylistically distinct callout, set apart from the regular reporting
      cards -- same shell, tinted background + accent rule + an eyebrow label */
-  .jw-note-card{ background:#fdf6df; border-left:6px solid #f4c913; }
-  .jw-item-card p.jw-note-label{ margin:0 0 .5em; color:#c2410c; font-family:'Roboto Condensed',-apple-system,Segoe UI,Roboto,sans-serif;
+  .jw-note-card{ background:#f4f0e6; border-left:6px solid #f4c913; }
+  .jw-item-card p.jw-note-label{ margin:0 0 .5em; color:#d64d4d; font-family:var(--font-heading);
                                   font-weight:700; font-size:.85em; letter-spacing:.06em; text-transform:uppercase; }
 
-  /* the pivot and every item card scroll as a literal, fully opaque part of
-     the page (see the JS "stack" below) rather than fading in like the
+  /* every item card scrolls as a literal, fully opaque part of the page
+     (see the JS "stack" below) rather than fading in like the
      headline/caption reveal cards, so they never inherit .jw-card's opacity:0 */
-  .jw-pivot-card,.jw-item-card{ opacity:1; }
+  .jw-item-card{ opacity:1; }
 
   @media (max-width:600px){
     .jw-cmt{ max-width:78vw; }
     .jw-cmt2,.jw-cmt4{ left:6%; right:auto; }
     .jw-rd-body{ font-size:15px; }
-    .jw-pivot-card{ max-width:82vw; }
     .jw-item-card{ max-width:82vw; }
   }
   @media (prefers-reduced-motion:reduce){
@@ -247,11 +255,6 @@
         <p class="jw-rd-body">I’m living for this John Williams drama... I need to make some popcorn</p>
       </div>
     </div></blockquote>
-    <div class="jw-pivot">
-      <div class="jw-card jw-pivot-card">
-        <p>Lost in the billboard outrage is a quieter question: <span>what happens to these neighborhoods when investors—most without billboards—scale Williams’ playbook.</span></p>
-      </div>
-    </div>
     <!-- "items": the ongoing sequence of body-copy cards that scroll over the
          pinned photo, stacked top-to-bottom behind it and moving 1:1 with
          scroll like a normal, fully opaque block of page content -- not a
@@ -262,6 +265,7 @@
          out (and grows the required scroll room) automatically. -->
     <div class="jw-item">
       <div class="jw-card jw-item-card">
+        <p class="jw-pivot-lead">Lost in the billboard outrage is a quieter question: <span>what happens to these neighborhoods when investors—most without billboards—scale Williams’ playbook.</span></p>
         <p>Williams removed the “I buy crack houses” billboard after pushback from Cleveland Council President Blaine Griffin, but he’s not backing down from his in-your-face marketing strategy.</p>
         <p>Williams believes the local virality of his billboards only helps his business even when the attention is negative. He’s hoping to reach potential sellers. “They’ll see a billboard and [think] I’ll see what the guy will give me,” he explained.</p>
         <p>A new set of billboards say simply, “I hate John Williams,” defaced with fake graffiti.</p>
@@ -378,7 +382,7 @@
     </div>
     <div class="jw-item jw-item-right">
       <div class="jw-card jw-item-card jw-item-caption" data-bg="https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-11-scaled.jpg">
-        <p>Williams says he isn’t worried about how it looks now.</p>
+        <p >Williams says he isn’t worried about how it looks now.</p>
         <p>“The only thing that matters is what you’ve done,” he said. “What everyone says in the beginning, the middle is kind of irrelevant. Everyone forgets about that. All they remember is what was actually achieved.”</p>
       </div>
     </div>
@@ -400,7 +404,6 @@
   var hLine1   = scrolly.querySelector('.jw-headline-l1');
   var hLine2   = scrolly.querySelector('.jw-headline-l2');
   var captionCard  = scrolly.querySelector('.jw-caption-card');
-  var pivotCard    = scrolly.querySelector('.jw-pivot-card');
   // each match is the one thing that moves as a rigid unit inside a .jw-item:
   // usually a lone .jw-item-card, or a .jw-item-stack grouping several cards
   // (e.g. a card + a note) that should scroll and be measured together
@@ -446,16 +449,16 @@
     commentsExit:    [378, 399]
   };
 
-  // The pivot and every .jw-item-card after it behave like a literal chunk of
-  // scrolling page content stacked behind the sticky photo: fully opaque,
-  // sized to their own natural height (no clipping, no forced pause), and
-  // translated 1:1 with scroll -- not eased, not faded. buildStack() measures
-  // each card's real rendered height and lays them out top-to-bottom, so
-  // adding a new .jw-item-card (see the HTML comment above the first one)
-  // just grows the stack automatically.
+  // Every .jw-item-card behaves like a literal chunk of scrolling page
+  // content stacked behind the sticky photo: fully opaque, sized to its own
+  // natural height (no clipping, no forced pause), and translated 1:1 with
+  // scroll -- not eased, not faded. buildStack() measures each card's real
+  // rendered height and lays them out top-to-bottom, so adding a new
+  // .jw-item-card (see the HTML comment above the first one) just grows the
+  // stack automatically.
   var STACK_START  = T.commentsExit[1] + 40; // vh of empty photo after comments clear
   var STACK_BUFFER = 80; // vh of approach+recede room around each card
-  var stackEls = [pivotCard].concat(itemEls);
+  var stackEls = itemEls;
   var stack = [];
   var TOTAL_VH = 0;
 
