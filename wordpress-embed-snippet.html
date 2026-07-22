@@ -5,22 +5,26 @@
   Paste this into a "Custom HTML" block in the WordPress post/page where the
   scrolly should appear.
 
-  How the pin works: .jw-embed-wrap is a tall invisible "track" (734vh) that
-  gives you scroll room. .jw-embed-sticky pins at the top of the viewport
-  (100vh) for the whole time the track is scrolling past. As you scroll, the
-  JS below measures how far through the track you are (0 -> 1) and sends
-  that number into the child iframe via pym's postMessage channel; the child
-  uses it to drive all its internal animations. The child itself never
-  scrolls — only this wrapper does.
+  How the pin works: .jw-embed-wrap is a tall invisible "track" that gives
+  you scroll room. .jw-embed-sticky pins at the top of the viewport (100vh)
+  for the whole time the track is scrolling past. As you scroll, the JS
+  below measures how far through the track you are (0 -> 1) and sends that
+  number into the child iframe via pym's postMessage channel; the child uses
+  it to drive all its internal animations. The child itself never scrolls —
+  only this wrapper does.
 
-  KEEPING THE TRACK HEIGHT IN SYNC: index.html now builds its own timeline
-  from a growing list of ".jw-item-card" sections (see the comment above the
-  first one in index.html), and computes its own required scroll room as
-  TOTAL_VH + 100 in vh. Every time a new item is added there, TOTAL_VH grows
-  and --jw-scroll-length below must be bumped to match, or the parent will
-  finish its scroll (and un-pin the image) before the child has played
-  through everything. Open index.html standalone, check what it sets
-  scrolly.style.height to (that's the number you want), and copy it here.
+  TRACK HEIGHT IS AUTOMATIC: the child (index.html) measures its own real
+  content height (TOTAL_VH, built from its growing list of ".jw-item-card"
+  sections) and reports it to this page over the same pym channel, on load,
+  on resize, and again once web fonts settle. The JS below writes that
+  straight into --jw-scroll-length, so this track always matches the
+  child's actual length -- no number to hand-maintain here anymore. (This
+  used to be a hardcoded vh guess that had to be bumped by hand every time
+  an item was added; letting it go stale is what made the embed feel like
+  it scrolled way too fast/sensitively compared to the standalone preview,
+  since the parent's track would finish in a fraction of the child's real
+  content.) --jw-scroll-length's 734vh below is just the pre-JS fallback
+  shown for the instant before the child's first report arrives.
 
   BEFORE PUBLISHING:
   1. Swap CHILD_URL below for wherever index.html actually lives.
@@ -34,11 +38,7 @@
          instead. This keeps the published piece off GitHub entirely.
   2. Double-check index.html's own --img-closeup / --img-billboard vars
      point at real Media Library image URLs (not REPLACE_... placeholders).
-  3. Adjust --jw-scroll-length below if you want the pinned experience to
-     take more or less scrolling to complete (734vh matches the child's own
-     standalone preview length today -- see the "KEEPING THE TRACK HEIGHT IN
-     SYNC" note above, this needs to grow every time an item is added).
-  4. FULL-BLEED: two separate problems had to be solved to get
+  3. FULL-BLEED: two separate problems had to be solved to get
      #jw-embed-wrap to truly span the whole browser width:
        a) WordPress/Gutenberg themes (Newspack included) apply a default
           "max-width:100%" to direct children of .entry-content to keep
@@ -58,7 +58,7 @@
           wrapper's actual offset from the true viewport edge in JS and
           setting margin-left to cancel it out exactly, on load and on
           resize (since a responsive sidebar can appear/disappear).
-  5. STICKY PIN BREAKING UNDER "SINGLE WIDE" / "SINGLE FEATURE" TEMPLATES:
+  4. STICKY PIN BREAKING UNDER "SINGLE WIDE" / "SINGLE FEATURE" TEMPLATES:
      Newspack Theme sets `.site-content { overflow: hidden; }` specifically
      for those two templates (to contain other 100vw-wide full-bleed
      elements, per the theme's own source comments). But an overflow other
@@ -72,7 +72,7 @@
      shouldn't reintroduce the horizontal-scrollbar issue that safeguard
      exists for. If you're not using either template, this rule is inert.
   ============================================================================
-  6. SITE MASTHEAD STAYING PINNED: Newspack Theme makes the site header
+  5. SITE MASTHEAD STAYING PINNED: Newspack Theme makes the site header
      ("masthead") sticky by default, which fights the full-bleed pinned
      image for the top of the screen. The override below un-sticks it for
      just this post so it scrolls away normally with the rest of the page,
@@ -141,6 +141,18 @@
 
   var wrap = document.getElementById('jw-embed-wrap');
   var pymParent = new pym.Parent('jw-billboard-hook', CHILD_URL, {});
+
+  // The child reports its own real measured height (in px) here every time
+  // it changes -- on load, on resize, and after web fonts settle -- so this
+  // track always matches however tall the story actually is instead of the
+  // hand-maintained --jw-scroll-length guess below ever going stale again.
+  // That guess going stale (track finishing far short of the child's real
+  // content) is what made the embed feel like it scrolled way too fast/
+  // sensitively compared to the standalone preview.
+  pymParent.onMessage('trackHeight', function(pxStr){
+    wrap.style.setProperty('--jw-scroll-length', pxStr + 'px');
+    onScroll();
+  });
 
   function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
 

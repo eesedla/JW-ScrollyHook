@@ -642,14 +642,32 @@
     if (!embedded){
       scrolly.style.height = (TOTAL_VH + 100) + 'vh';
       onScroll();
+    } else {
+      sendTrackHeight();
     }
   }
 
+  // PRODUCTION: tells the parent exactly how tall (in px) its scroll track
+  // needs to be so 0->1 of ITS scroll maps to the full 0->TOTAL_VH of ours.
+  // Sent on connect, resize, and after the font-driven recompute() below, so
+  // the parent's track (see wordpress-embed-snippet.html) always matches our
+  // real measured height instead of a hand-maintained guess that silently
+  // goes stale every time an item card is added and TOTAL_VH grows -- a
+  // stale (too-short) parent track is what makes the embed feel like it
+  // scrolls way too fast/sensitively compared to this standalone preview.
+  function sendTrackHeight(){
+    if (!child) return;
+    var px = (TOTAL_VH + 100) / 100 * window.innerHeight;
+    child.sendMessage('trackHeight', String(px));
+  }
+
+  var child;
   if (embedded && window.pym){
-    // PRODUCTION: parent relays scroll progress (0->1 over its own track,
-    // sized to match TOTAL_VH below -- see wordpress-embed-snippet.html);
-    // convert back to our internal vh space and stay one screen tall.
-    var child = new pym.Child({ polling: 0 });
+    // parent relays scroll progress (0->1 over its own track, kept in sync
+    // with TOTAL_VH via sendTrackHeight() above) which we convert back into
+    // our internal vh space while staying one screen tall ourselves.
+    child = new pym.Child({ polling: 0 });
+    sendTrackHeight();
 
     if (reduce){
       // render() is already a no-op per-frame under reduced motion (see its
@@ -675,7 +693,7 @@
       })();
     }
 
-    window.addEventListener('resize', function(){ buildStack(); child.sendHeight(); });
+    window.addEventListener('resize', function(){ buildStack(); child.sendHeight(); sendTrackHeight(); });
   } else {
     // STANDALONE PREVIEW: give the page its own scroll room (auto-sized from
     // TOTAL_VH, so adding items grows this automatically) and self-drive.
