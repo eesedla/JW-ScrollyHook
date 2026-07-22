@@ -47,7 +47,7 @@
     transform-origin:50% 42%;         /* center the pull-back on his face */
     will-change:transform;
   }
-  .jw-layer{ position:absolute; inset:0; background-size:cover; background-position:center; will-change:opacity; }
+  .jw-layer{ position:absolute; inset:0; background-size:cover; background-position:center; will-change:opacity,transform; }
   .jw-closeup  { background-image:var(--img-closeup),   var(--fallback); opacity:1; }
   .jw-billboard{ background-image:var(--img-billboard), var(--fallback); opacity:0; }
 
@@ -259,7 +259,7 @@
          stack below measures every .jw-item-card's own height and lays them
          out (and grows the required scroll room) automatically. -->
     <div class="jw-item">
-      <div class="jw-card jw-item-card">
+      <div class="jw-card jw-item-card" data-photo-exit="center">
         <p class="jw-pivot-lead">Lost in the billboard outrage is a quieter question: <span>what happens to these neighborhoods when investors—most without billboards—scale Williams’ playbook.</span></p>
         <p>Williams removed the “I buy crack houses” billboard after pushback from Cleveland Council President Blaine Griffin, but he’s not backing down from his in-your-face marketing strategy.</p>
         <p>Williams believes the local virality of his billboards only helps his business even when the attention is negative. He’s hoping to reach potential sellers. “They’ll see a billboard and [think] I’ll see what the guy will give me,” he explained.</p>
@@ -268,10 +268,21 @@
       </div>
     </div>
     <!-- data-bg: swaps the pinned photo to this image once scroll reaches
-         this card -- the crossfade timing is computed automatically in the
-         empty gap right before the card arrives (see buildStack() in the JS) -->
+         this card. By default the new photo slides up from below fully
+         opaque (see the JS "slide" branch), fills the screen, and only then
+         does this card start entering -- add data-bg-transition="fade" on
+         the element carrying data-bg to opt a specific swap back into the
+         old crossfade-in-place instead (see buildStack() in the JS).
+         By default a photo sticks in place until its OWN card has fully
+         scrolled off screen before it starts exiting with the next photo.
+         data-photo-exit="center" instead locks a card to its photo as soon
+         as the card reaches center screen, so from that point the photo
+         scrolls away together with the card instead of waiting -- this can
+         go on any item card (see the pivot card above, paired with the
+         base billboard photo, not a data-bg swap) since it's read from the
+         card itself rather than from a data-bg element. -->
     <div class="jw-item jw-item-right">
-      <div class="jw-card jw-item-card" data-bg="https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-11-scaled.jpg">
+      <div class="jw-card jw-item-card" data-bg="https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-11-scaled.jpg" data-photo-exit="center">
         <p>Williams came to Cleveland about 18 months ago from South Florida. “Cleveland has a lot going for it. It’s affordable. There’s good food. There’s a lot of people who love sports. Cleveland is a great place,” he told Signal Cleveland in an interview.</p>
         <p>Now, Williams lives here full time, and despite pushback, he says he plans to buy 1,000 Cleveland homes over the next two years.</p>
         <p>That’s likely a stretch, according to property data and local leaders keeping tabs on his activity. Cleveland’s Building and Housing Director Sally Martin-O’Toole and analyst Timothy Kobie agree that, despite his visibility, Williams is not their biggest concern.</p>
@@ -289,7 +300,7 @@
          so they're measured and scrolled together as one rigid unit -- the
          note appears directly underneath rather than as its own beat -->
     <div class="jw-item jw-item-right">
-      <div class="jw-item-stack">
+      <div class="jw-item-stack" data-photo-exit="center">
         <div class="jw-card jw-item-card" data-bg="https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-9-scaled.jpg">
           <p class="jw-item-sub">Wholesale buyers like Williams hunt for properties that homeowners feel stuck with.</p>
           <p>They want to buy houses for cash, fast, often below market value.</p>
@@ -307,7 +318,7 @@
       </div>
     </div>
     <div class="jw-item jw-item-center">
-      <div class="jw-card jw-item-card" data-bg="https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-1-scaled.jpg">
+      <div class="jw-card jw-item-card" data-bg="https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-1-scaled.jpg" data-bg-transition="fade" data-photo-exit="center">
         <p class="jw-item-sub">Williams prefers to lease his properties to tenants with vouchers as part of a federal rent subsidy program often referred to as Section 8.</p>
         <p>Households with Section 8 vouchers pay about 30% of their income toward rent. The voucher covers the rest, up to what the federal government determines is “fair market rent” for the area.</p>
         <p>CMHA doesn’t formally partner with individual landlords. Voucher holders find units on the open market, and CMHA approves the property if it passes a federal housing quality inspection and the rent falls within fair market limits for the area.</p>
@@ -327,7 +338,7 @@
       </div>
     </div>
     <div class="jw-item jw-item-right">
-      <div class="jw-card jw-item-card" data-bg="https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-2-scaled.jpg">
+      <div class="jw-card jw-item-card" data-bg="https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-2-scaled.jpg" data-photo-exit="center">
         <p class="jw-item-sub">Housing officials fear that investors like Williams can price first-time home buyers out of the market.</p>
         <p>Williams pushes back on the idea that he’s pricing anyone out. The homes he buys, he says, are “little crack houses” using language that sparked outrage from residents and council members last summer. But he says those homes are in such disrepair that “no first-time buyer is going to be able to get financing on them.”</p>
         <p>City housing records about his properties complicate this claim. While several came with deferred maintenance that makes them less move-in ready, Williams’ portfolio is not uniformly what would be considered run-down.</p>
@@ -339,7 +350,7 @@
       </div>
     </div>
     <div class="jw-item jw-item-right">
-      <div class="jw-card jw-item-card" data-bg="https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-3-scaled.jpg">
+      <div class="jw-card jw-item-card" data-bg="https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-3-scaled.jpg" data-photo-exit="center">
         <p class="jw-item-sub">Investors disproportionately purchase in predominantly Black neighborhoods.</p>
         <p>On Cleveland’s East Side, owner-occupancy has dropped more than 30% between 2000 and 2021, according to Frank Ford, Senior Policy Advisor at the Fair Housing Center.</p>
         <p>In 2022, the U.S. House Financial Services Subcommittee found that housing investors disproportionately invest in neighborhoods with large Black communities.</p>
@@ -353,7 +364,7 @@
       </div>
     </div>
     <div class="jw-item jw-item-right">
-      <div class="jw-card jw-item-card" data-bg="https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-10-scaled.jpg">
+      <div class="jw-card jw-item-card" data-bg="https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-10-scaled.jpg" data-photo-exit="center">
         <p class="jw-item-sub">Williams isn’t the only investor using this playbook.</p>
         <p>Williams alone has little impact. Dozens of investors using the same strategy do.</p>
         <p>The same strategy—buying cheap, renovating for Section 8, and selling the model to out-of-state investors—is documented across online platforms like Instagram and YouTube.</p>
@@ -366,7 +377,7 @@
       </div>
     </div>
     <div class="jw-item jw-item-right">
-      <div class="jw-card jw-item-card" data-bg="https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-8-scaled.jpg">
+      <div class="jw-card jw-item-card" data-bg="https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-8-scaled.jpg" data-photo-exit="center">
         <p class="jw-item-sub">Williams rejects the premise. He says his operation is built to scale without slipping.</p>
         <p>“We have exceptional property management,” Williams said. “Our main focus is building a portfolio built on a bed of granite, not in a house of sand.”</p>
         <p>“If there was a problem with the property management, you would definitely hear about it on Reddit,” he said.</p>
@@ -423,6 +434,10 @@
   };
 
   var STACK_BUFFER = 80; // vh of approach+recede room around each stack card
+  var PHOTO_SLIDE_VH  = 100; // 1:1 scroll distance for a sliding photo to travel translateY(100vh) -> 0
+  var PHOTO_SETTLE_VH = 50;  // vh reserved after a sliding photo finishes covering the screen, before its card is allowed to start entering
+  var CARD_STICK_MARGIN_VH = 20; // small breathing room, past the point a data-photo-exit="center" card's own bottom edge has cleared the bottom of the screen, before it locks to its photo and they scroll away together
+  var STICK_LEAD_VH = 60; // approach room reserved for the NEXT card after a data-photo-exit="center" photo -- just enough for one short beat between the photo filling the screen and that card sliding in (unlike PHOTO_SETTLE_VH's longer wait, since the stick/margin above already did the waiting)
 
   // Every card in the stack -- headline, caption, pivot, item -- behaves
   // like a literal chunk of scrolling page content stacked behind the
@@ -433,13 +448,19 @@
   // returning the vh where the next run should pick up, so new sections
   // (see the HTML comment above the first item card) just grow the
   // required scroll room automatically without hand-tuning offsets.
-  function layoutStack(els, startVH){
+  // extraLead (vh, parallel array to els) reserves scroll room before an
+  // item's normal approach gap -- used to give a sliding photo transition
+  // (see bgSwaps below) its own dedicated beat that finishes covering the
+  // screen before that item's card is allowed to start entering.
+  function layoutStack(els, startVH, extraLead){
     var cursor = startVH;
-    var items = els.map(function(el){
+    var items = els.map(function(el,i){
+      var lead = (extraLead && extraLead[i]) || 0;
+      cursor += lead;
       var h = el.offsetHeight / window.innerHeight * 100;
       var center = cursor + STACK_BUFFER/2 + h/2;
       cursor = cursor + STACK_BUFFER + h;
-      return { el: el, center: center };
+      return { el: el, center: center, h: h };
     });
     return { items: items, end: cursor };
   }
@@ -451,18 +472,60 @@
   // Any .jw-item-card can carry data-bg="<image url>" to swap the pinned
   // photo once scroll reaches it -- each gets its own layer (painted over
   // whatever was showing before, same trick as the closeup->billboard
-  // crossfade above) that fades in across the empty gap right before that
-  // card arrives. No JS edits needed to add more of these later. (data-bg
-  // may be on the stack unit itself, or on a card nested inside it.)
+  // crossfade above). No JS edits needed to add more of these later.
+  // (data-bg may be on the stack unit itself, or on a card nested inside it.)
+  // Photo transitions default to an opaque slide-up (see the photoStack
+  // block and render() below): the new image travels translateY(100vh) -> 0
+  // at the same 1:1 scroll rate the .jw-item-card stack itself moves at,
+  // staying fully opaque the whole way rather than crossfading, while the
+  // photo it's replacing is pushed out the top over that same window. A
+  // card's data-bg element can carry data-bg-transition="fade" to opt that
+  // one swap back into the old crossfade-in-place instead.
   function findBg(el){ return el.dataset.bg ? el : el.querySelector('[data-bg]'); }
   var bgSwaps = itemEls.filter(findBg).map(function(el){
     var src = findBg(el);
+    var mode = src.dataset.bgTransition === 'fade' ? 'fade' : 'slide';
     var layer = document.createElement('div');
     layer.className = 'jw-layer';
     layer.style.backgroundImage = "url('"+src.dataset.bg+"')";
-    layer.style.opacity = '0';
+    if (mode === 'slide'){
+      layer.style.opacity = '1';
+      layer.style.transform = 'translateY(100vh)';
+    } else {
+      layer.style.opacity = '0';
+    }
     zoom.appendChild(layer);
-    return { cardEl: el, layer: layer, start: 0, end: 0 };
+    return { cardEl: el, layer: layer, mode: mode, start: 0, end: 0 };
+  });
+  // reserve each slide-type item its own approach room (see layoutStack's
+  // extraLead) ahead of its normal gap, sized to how its OUTGOING photo
+  // (the previous item's) exits. The default full-exit photo needs the
+  // fuller PHOTO_SLIDE_VH+PHOTO_SETTLE_VH reservation to guarantee it's
+  // done before this card is positioned to appear. A data-photo-exit=
+  // "center" photo already bakes its own breathing room into swap.start
+  // (CARD_STICK_MARGIN_VH, in buildStack() below), so it only needs the
+  // shorter STICK_LEAD_VH here -- reserving more just adds a longer dead
+  // pause between the photo filling the screen and the card sliding in.
+  var extraLeads = itemEls.map(function(el, idx){
+    var swap = bgSwaps.filter(function(s){ return s.cardEl === el; })[0];
+    if (!swap || swap.mode !== 'slide') return 0;
+    var outgoingStick = idx > 0 && itemEls[idx-1].dataset.photoExit === 'center';
+    return outgoingStick ? STICK_LEAD_VH : (PHOTO_SLIDE_VH + PHOTO_SETTLE_VH);
+  });
+
+  // photoStack: every layer that has occupied the pinned photo frame, in
+  // the order it arrived -- the base billboard photo, then each bgSwap's
+  // layer. A slide-type swap both brings its own layer in from the bottom
+  // AND pushes the layer before it out the top, over the exact same
+  // window (see swap.start/end below), so the two are rigidly 100vh apart
+  // the whole time and can never gap -- one continuous filmstrip rather
+  // than two independently-timed animations that happen to usually line up.
+  var photoStack = [{ el: billboard, entrance: null, idx: 0 }]
+    .concat(bgSwaps.map(function(swap){
+      return { el: swap.layer, entrance: swap, idx: itemEls.indexOf(swap.cardEl) };
+    }));
+  bgSwaps.forEach(function(swap, i){
+    if (swap.mode === 'slide') photoStack[i].exit = swap;
   });
 
   function buildStack(){
@@ -474,16 +537,41 @@
     T.commentsStart = intro.end;
     T.commentsExit  = [T.commentsStart + 59, T.commentsStart + 80];
 
-    var main = layoutStack(itemEls, T.commentsExit[1] + 40);
+    var main = layoutStack(itemEls, T.commentsExit[1] + 40, extraLeads);
     stack = intro.items.concat(main.items);
     TOTAL_VH = main.end + STACK_BUFFER/2;
 
-    bgSwaps.forEach(function(swap){
+    bgSwaps.forEach(function(swap, i){
       var idx = itemEls.indexOf(swap.cardEl);
-      var prevCenter = idx > 0 ? main.items[idx-1].center : (T.commentsExit[1] + 40) - STACK_BUFFER;
-      var mid = (prevCenter + main.items[idx].center) / 2;
-      swap.start = mid - 20;
-      swap.end   = mid + 20;
+      if (swap.mode === 'slide'){
+        // the photo behind the outgoing card sticks in place (opaque, at
+        // rest) for that card's entire dwell, and only starts sliding out
+        // once the card has fully scrolled off screen -- extraLeads above
+        // guarantees enough room for this 100vh beat to finish well before
+        // the next card is positioned to start entering. A card marked
+        // data-photo-exit="center" locks to its photo earlier instead, as
+        // soon as the card's OWN bottom edge clears the bottom of the
+        // screen (plus CARD_STICK_MARGIN_VH of breathing room) rather than
+        // waiting for the whole card to scroll off -- for a card taller
+        // than one screen (out.h > 100) that's well before it fully exits;
+        // for a shorter card it reduces to sticking at plain center, since
+        // the card's bottom edge already clears the screen before then.
+        // Checked on the item card itself (not the bgSwap) so this also
+        // works for the very first photo (the base billboard), which has
+        // no data-bg/swap of its own to carry the attribute.
+        var outIdx = photoStack[i].idx;
+        var out = main.items[outIdx];
+        var stickAtCenter = itemEls[outIdx].dataset.photoExit === 'center';
+        swap.start = stickAtCenter
+          ? out.center + Math.max(0, (out.h - 100)/2 + CARD_STICK_MARGIN_VH)
+          : out.center + (100 + out.h)/2;
+        swap.end   = swap.start + PHOTO_SLIDE_VH;
+      } else {
+        var prevCenter = idx > 0 ? main.items[idx-1].center : (T.commentsExit[1] + 40) - STACK_BUFFER;
+        var mid = (prevCenter + main.items[idx].center) / 2;
+        swap.start = mid - 20;
+        swap.end   = mid + 20;
+      }
     });
   }
   buildStack();
@@ -496,7 +584,13 @@
     closeup.style.opacity   = (1-ramp(v,T.closeupOut[0],T.closeupOut[1])).toFixed(3);
 
     bgSwaps.forEach(function(swap){
-      swap.layer.style.opacity = ramp(v, swap.start, swap.end).toFixed(3);
+      if (swap.mode === 'fade') swap.layer.style.opacity = ramp(v, swap.start, swap.end).toFixed(3);
+    });
+
+    photoStack.forEach(function(p){
+      var inP  = (p.entrance && p.entrance.mode === 'slide') ? ramp(v, p.entrance.start, p.entrance.end) : 1;
+      var outP = p.exit ? ramp(v, p.exit.start, p.exit.end) : 0;
+      p.el.style.transform = 'translateY('+(100*(1-inP) - 100*outP).toFixed(2)+'vh)';
     });
 
     cmts.forEach(function(el,i){
