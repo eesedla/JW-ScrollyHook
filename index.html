@@ -557,8 +557,31 @@
     // sized to match TOTAL_VH below -- see wordpress-embed-snippet.html);
     // convert back to our internal vh space and stay one screen tall.
     var child = new pym.Child({ polling: 0 });
-    child.onMessage('progress', function(pStr){ render(parseFloat(pStr) * TOTAL_VH); });
-    render(0);
+
+    if (reduce){
+      // render() is already a no-op per-frame under reduced motion (see its
+      // own check above), so there's nothing to smooth -- just paint once.
+      render(0);
+    } else {
+      // Ease the displayed position toward the parent's latest reported
+      // progress on our OWN steady rAF loop, rather than rendering
+      // synchronously inside the postMessage handler. On a real WordPress
+      // post -- ads, trackers, and other plugin JS all competing for the
+      // main thread -- progress messages arrive in irregular bursts instead
+      // of the clean one-per-frame cadence a lightweight preview page gets,
+      // and rendering straight off each message reproduces that burstiness
+      // as visible jumps. This decouples us from that cadence entirely, so
+      // motion stays smooth even when messages arrive unevenly.
+      var targetVH = 0, currentVH = 0;
+      child.onMessage('progress', function(pStr){ targetVH = parseFloat(pStr) * TOTAL_VH; });
+      (function tick(){
+        currentVH += (targetVH - currentVH) * 0.22;
+        if (Math.abs(targetVH - currentVH) < 0.02) currentVH = targetVH;
+        render(currentVH);
+        requestAnimationFrame(tick);
+      })();
+    }
+
     window.addEventListener('resize', function(){ buildStack(); child.sendHeight(); });
   } else {
     // STANDALONE PREVIEW: give the page its own scroll room (auto-sized from
