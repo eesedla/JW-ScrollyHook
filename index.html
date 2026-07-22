@@ -54,7 +54,7 @@
   /* shared "story card" -- these slide up from below the frame, hold, then
      continue sliding up and out, so they read as physically scrolling over
      the pinned photo rather than just fading in place */
-  .jw-card{ box-sizing:border-box; background:#fff; border-radius:14px;
+  .jw-card{ box-sizing:border-box; background:#fff;
             box-shadow:0 20px 50px rgba(0,0,0,.4); opacity:0; will-change:opacity,transform; }
 
   .jw-cmt{ position:absolute; margin:0; max-width:min(38vw,340px); opacity:1;
@@ -62,7 +62,7 @@
 
   /* Reddit-style comment card */
   .jw-rd-card{ box-sizing:border-box; display:flex; gap:8px; align-items:flex-start;
-               background:#fff; border:1px solid #ccd8db; border-radius:10px;
+               background:#fff; border:1px solid #ccd8db;
                padding:10px 12px 10px 8px; box-shadow:0 8px 24px rgba(0,0,0,.35); }
   .jw-rd-vote{ display:flex; flex-direction:column; align-items:center; gap:3px;
                flex:0 0 auto; line-height:1; padding-top:1px; }
@@ -99,15 +99,10 @@
   .jw-cmt9{ bottom:8%; left:8%; max-width:min(30vw,340px); }
   .jw-cmt9 .jw-rd-avatar{ background:linear-gradient(135deg,#51a89a,#2f7a6e); }
 
-  .jw-headline{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-                padding:0 7vw; }
   .jw-headline-card{ max-width:min(800px,76vw); padding:clamp(32px,3.8vw,56px) clamp(36px,4.2vw,60px);
-                      text-align:center; display:grid; align-items:center; overflow:hidden; }
-  .jw-headline-card p{ grid-area:1/1; margin:0; color:#404f54; font-family:var(--font-heading);
-                        font-weight:700; font-size:calc(var(--newspack-theme-font-size-xxl, 2.2em) * 1.15); line-height:1.25;
-                        opacity:0; will-change:opacity,transform; }
-  .jw-headline-l2{ color:#879599; font-weight:600; font-size:.6em; font-family:var(--font-body);
-                    letter-spacing:.01em; }
+                      text-align:center; }
+  .jw-headline-card p{ margin:0; color:#404f54; font-family:var(--font-heading);
+                        font-weight:700; font-size:calc(var(--newspack-theme-font-size-xxl, 2.2em) * 1.15); line-height:1.25; }
   /* mirrors the newspack-theme .entry-title responsive scale (2.2em -> 2.8em -> 3.2em), bumped up ~15% */
   @media only screen and (min-width:782px){
     .jw-headline-card p{ font-size:calc(var(--newspack-theme-font-size-xxxl, 2.8em) * 1.15); }
@@ -116,14 +111,13 @@
     .jw-headline-card p{ font-size:calc(var(--newspack-theme-font-size-xxxxl, 3.2em) * 1.15); }
   }
 
-  .jw-caption{ position:absolute; top:50%; left:6%; transform:translateY(-50%); }
   .jw-caption-card{ max-width:min(560px,46vw); padding:clamp(22px,2.6vw,36px) clamp(26px,3vw,40px); }
   .jw-caption-card p{ margin:0; color:#404f54; font-family:var(--font-body);
                        font-weight:500; font-size:clamp(21px,2.6vw,30px); line-height:1.45; }
   .jw-cap-l1{ margin-bottom:.7em!important; }
   .jw-cap-em{ font-style:italic; }
   .jw-cap-em-hl{ padding:.05em .12em; background-image:linear-gradient(#f4c913,#f4c913);
-                 background-repeat:no-repeat; background-position:0 50%; background-size:0% 100%;
+                 background-repeat:no-repeat; background-position:0 50%; background-size:100% 100%;
                  box-decoration-break:clone; -webkit-box-decoration-break:clone; }
 
   @media (max-width:600px){
@@ -164,10 +158,10 @@
   .jw-item-card p.jw-note-label{ margin:0 0 .5em; color:#d64d4d; font-family:var(--font-heading);
                                   font-weight:700; font-size:.85em; letter-spacing:.06em; text-transform:uppercase; }
 
-  /* every item card scrolls as a literal, fully opaque part of the page
-     (see the JS "stack" below) rather than fading in like the
-     headline/caption reveal cards, so they never inherit .jw-card's opacity:0 */
-  .jw-item-card{ opacity:1; }
+  /* every card in the stack -- headline, caption, pivot, item -- scrolls as
+     a literal, fully opaque part of the page (see the JS "stack" below)
+     rather than fading in, so none of them inherit .jw-card's opacity:0 */
+  .jw-item-card,.jw-headline-card,.jw-caption-card{ opacity:1; }
 
   @media (max-width:600px){
     .jw-cmt{ max-width:78vw; }
@@ -179,9 +173,6 @@
     .jw-zoom{ transform:scale(1)!important; }
     .jw-closeup{ opacity:0!important; } .jw-billboard{ opacity:1!important; }
     .jw-cmt1,.jw-cmt3{ opacity:1!important; transform:none!important; }
-    .jw-headline-card,.jw-caption-card{ opacity:1!important; transform:none!important; }
-    .jw-headline-l1{ opacity:1!important; transform:none!important; }
-    .jw-cap-em-hl{ background-size:100% 100%!important; }
   }
 </style>
 </head>
@@ -193,13 +184,17 @@
       <div class="jw-layer jw-closeup"   role="img" aria-label="Extreme close-up of John Williams' billboard face"></div>
       <div class="jw-layer jw-billboard" role="img" aria-label="Billboard reading HIM, Cleveland's #1 Cash Home Buyer"></div>
     </div>
-    <div class="jw-headline">
+    <div class="jw-item jw-item-center">
       <div class="jw-card jw-headline-card">
         <p class="jw-headline-l1">John Williams' billboards put him on Cleveland's radar.</p>
+      </div>
+    </div>
+    <div class="jw-item jw-item-center">
+      <div class="jw-card jw-headline-card">
         <p class="jw-headline-l2">Housing officials are paying attention to his business model.</p>
       </div>
     </div>
-    <div class="jw-caption">
+    <div class="jw-item">
       <div class="jw-card jw-caption-card">
         <p class="jw-cap-l1">John Williams caught Cleveland’s attention last summer with a billboard that read “Yes! I buy crack houses.”</p>
         <p class="jw-cap-l2">Online and beyond, Clevelanders have found common ground: <em class="jw-cap-em"><span class="jw-cap-em-hl">they can’t stand John Williams.</span></em></p>
@@ -381,8 +376,8 @@
       </div>
     </div>
     <div class="jw-item jw-item-right">
-      <div class="jw-card jw-item-card jw-item-caption" data-bg="https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-11-scaled.jpg">
-        <p >Williams says he isn’t worried about how it looks now.</p>
+      <div class="jw-card jw-item-card " data-bg="https://signalcleveland.org/wp-content/uploads/2026/07/Cleveland-John-Williams-Billboards-11-scaled.jpg">
+        <p class="jw-item-sub">Williams says he isn’t worried about how it looks now.</p>
         <p>“The only thing that matters is what you’ve done,” he said. “What everyone says in the beginning, the middle is kind of irrelevant. Everyone forgets about that. All they remember is what was actually achieved.”</p>
       </div>
     </div>
@@ -400,65 +395,56 @@
   var zoom     = scrolly.querySelector('.jw-zoom');
   var closeup  = scrolly.querySelector('.jw-closeup');
   var billboard= scrolly.querySelector('.jw-billboard');
-  var headlineCard = scrolly.querySelector('.jw-headline-card');
-  var hLine1   = scrolly.querySelector('.jw-headline-l1');
-  var hLine2   = scrolly.querySelector('.jw-headline-l2');
-  var captionCard  = scrolly.querySelector('.jw-caption-card');
+  var headlineCards = [].slice.call(scrolly.querySelectorAll('.jw-headline-card'));
+  var headlineCard    = headlineCards[0];
+  var headlineSubCard = headlineCards[1];
+  var captionCard     = scrolly.querySelector('.jw-caption-card');
   // each match is the one thing that moves as a rigid unit inside a .jw-item:
   // usually a lone .jw-item-card, or a .jw-item-stack grouping several cards
   // (e.g. a card + a note) that should scroll and be measured together
   var itemEls  = [].slice.call(scrolly.querySelectorAll('.jw-item > .jw-item-card, .jw-item > .jw-item-stack'));
-  var capEmHl  = scrolly.querySelector('.jw-cap-em-hl');
   var cmts     = [].slice.call(scrolly.querySelectorAll('.jw-cmt'));
 
   function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
   function ramp(v,a,b){ return clamp((v-a)/(b-a),0,1); }
   function pulse(v,a,b,c,d){ return Math.min(ramp(v,a,b), 1-ramp(v,c,d)); }
 
-  // the headline/caption reveals are the "hero" beats: a subtle nudge + fade
-  function cardMotion(v,a,b,c,d,offset){
-    offset = offset || 56;
-    var inV  = ramp(v,a,b);
-    var outV = ramp(v,c,d);
-    var opacity = Math.min(inV, 1-outV);
-    var y = v<=b ? offset*(1-inV) : (v>=c ? -offset*outV : 0);
-    return { opacity:opacity, y:y };
-  }
-  function applyCard(el,m){
-    el.style.opacity = m.opacity.toFixed(3);
-    el.style.transform = 'translateY('+m.y.toFixed(2)+'px)';
-  }
-
-  // ---- timeline, in absolute vh so new sections can be appended below
-  // without ever having to rescale an earlier breakpoint by hand ----
+  // ---- timeline, in absolute vh. The intro (headline+caption) and item
+  // stacks are self-measuring (see layoutStack() below) and grow the
+  // required scroll room automatically; only the photo's own zoom/crossfade
+  // and the comments' internal stagger/width are hand-tuned constants. ----
   var T = {
     pullbackEnd: 252,
     billboardIn: [126, 202],
     closeupOut:  [134, 193],
 
-    headlineCard: [0, 21, 118, 134],
-    hLine1:       [25, 38, 63, 76],
-    hLine2:       [80, 92, 109, 122],
-
-    captionCard: [151, 172, 302, 319],
-    emSweep:     [235, 256],
-
-    commentsStart:   319,
     commentsStagger: 6,
-    commentsWidth:   8,
-    commentsExit:    [378, 399]
+    commentsWidth:   8
   };
 
-  // Every .jw-item-card behaves like a literal chunk of scrolling page
-  // content stacked behind the sticky photo: fully opaque, sized to its own
-  // natural height (no clipping, no forced pause), and translated 1:1 with
-  // scroll -- not eased, not faded. buildStack() measures each card's real
-  // rendered height and lays them out top-to-bottom, so adding a new
-  // .jw-item-card (see the HTML comment above the first one) just grows the
-  // stack automatically.
-  var STACK_START  = T.commentsExit[1] + 40; // vh of empty photo after comments clear
-  var STACK_BUFFER = 80; // vh of approach+recede room around each card
-  var stackEls = itemEls;
+  var STACK_BUFFER = 80; // vh of approach+recede room around each stack card
+
+  // Every card in the stack -- headline, caption, pivot, item -- behaves
+  // like a literal chunk of scrolling page content stacked behind the
+  // sticky photo: fully opaque, sized to its own natural height (no
+  // clipping, no forced pause), and translated 1:1 with scroll -- not
+  // eased, not faded. layoutStack() measures each card's real rendered
+  // height and lays a run of them out top-to-bottom starting at startVH,
+  // returning the vh where the next run should pick up, so new sections
+  // (see the HTML comment above the first item card) just grow the
+  // required scroll room automatically without hand-tuning offsets.
+  function layoutStack(els, startVH){
+    var cursor = startVH;
+    var items = els.map(function(el){
+      var h = el.offsetHeight / window.innerHeight * 100;
+      var center = cursor + STACK_BUFFER/2 + h/2;
+      cursor = cursor + STACK_BUFFER + h;
+      return { el: el, center: center };
+    });
+    return { items: items, end: cursor };
+  }
+
+  var introEls = [headlineCard, headlineSubCard, captionCard];
   var stack = [];
   var TOTAL_VH = 0;
 
@@ -480,19 +466,22 @@
   });
 
   function buildStack(){
-    var cursor = STACK_START;
-    stack = stackEls.map(function(el){
-      var h = el.offsetHeight / window.innerHeight * 100;
-      var center = cursor + STACK_BUFFER/2 + h/2;
-      cursor = cursor + STACK_BUFFER + h;
-      return { el: el, center: center };
-    });
-    TOTAL_VH = cursor + STACK_BUFFER/2;
+    // headline + caption lead the whole track, starting at the very top
+    var intro = layoutStack(introEls, 0);
+    // comments pick up right where caption clears, same "safe gap" spacing
+    // every other stack transition uses -- preserves their original timing
+    // (59vh in, 80vh to fully exit) relative to whenever that now lands
+    T.commentsStart = intro.end;
+    T.commentsExit  = [T.commentsStart + 59, T.commentsStart + 80];
+
+    var main = layoutStack(itemEls, T.commentsExit[1] + 40);
+    stack = intro.items.concat(main.items);
+    TOTAL_VH = main.end + STACK_BUFFER/2;
 
     bgSwaps.forEach(function(swap){
-      var idx = stackEls.indexOf(swap.cardEl);
-      var prevCenter = idx > 0 ? stack[idx-1].center : STACK_START - STACK_BUFFER;
-      var mid = (prevCenter + stack[idx].center) / 2;
+      var idx = itemEls.indexOf(swap.cardEl);
+      var prevCenter = idx > 0 ? main.items[idx-1].center : (T.commentsExit[1] + 40) - STACK_BUFFER;
+      var mid = (prevCenter + main.items[idx].center) / 2;
       swap.start = mid - 20;
       swap.end   = mid + 20;
     });
@@ -509,15 +498,6 @@
     bgSwaps.forEach(function(swap){
       swap.layer.style.opacity = ramp(v, swap.start, swap.end).toFixed(3);
     });
-
-    applyCard(headlineCard, cardMotion(v, T.headlineCard[0],T.headlineCard[1], T.headlineCard[2],T.headlineCard[3]));
-    // headline box sticks in place while its two lines scroll through inside it
-    applyCard(hLine1, cardMotion(v, T.hLine1[0],T.hLine1[1], T.hLine1[2],T.hLine1[3], 22));
-    applyCard(hLine2, cardMotion(v, T.hLine2[0],T.hLine2[1], T.hLine2[2],T.hLine2[3], 22));
-    applyCard(captionCard, cardMotion(v, T.captionCard[0],T.captionCard[1], T.captionCard[2],T.captionCard[3]));
-
-    var emSweep = ramp(v,T.emSweep[0],T.emSweep[1]);
-    capEmHl.style.backgroundSize = (emSweep*100).toFixed(1)+'% 100%';
 
     cmts.forEach(function(el,i){
       var start = T.commentsStart + i*T.commentsStagger;
